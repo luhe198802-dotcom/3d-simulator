@@ -85,10 +85,11 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
+      overflow: hidden;
     }
 
     .section {
-      padding: 12px;
+      padding: 10px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -106,7 +107,8 @@
 
     textarea {
       width: 100%;
-      min-height: 260px;
+      min-height: 190px;
+      max-height: 230px;
       resize: vertical;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -139,7 +141,7 @@
     button {
       border: 0;
       border-radius: 8px;
-      padding: 12px 10px;
+      padding: 10px 9px;
       color: #08100d;
       background: var(--cyan);
       font-weight: 700;
@@ -170,8 +172,8 @@
       background: var(--panel-soft);
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 9px;
-      min-height: 58px;
+      padding: 8px;
+      min-height: 50px;
     }
 
     .metric span {
@@ -204,7 +206,8 @@
     }
 
     .log {
-      max-height: 170px;
+      max-height: 180px;
+      min-height: 96px;
       overflow: auto;
       display: flex;
       flex-direction: column;
@@ -219,6 +222,8 @@
       border-left: 4px solid var(--green);
       color: var(--muted);
     }
+
+    .hidden-metrics { display: none; }
 
     .log-item.warn { border-left-color: var(--amber); color: #ffd88c; }
     .log-item.crash { border-left-color: var(--red); color: #ffb5b5; }
@@ -372,23 +377,16 @@
 
       <div class="section">
         <div class="title-row">
-          <span>运动轨迹框</span>
-          <span id="boundsLabel">未生成</span>
-        </div>
-        <div class="metrics">
-          <div class="metric"><span>X 范围</span><strong id="xRange">--</strong></div>
-          <div class="metric"><span>Y 范围</span><strong id="yRange">--</strong></div>
-          <div class="metric"><span>Z 范围</span><strong id="zRange">--</strong></div>
-          <div class="metric"><span>报警数量</span><strong id="alarmCount">0</strong></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="title-row">
           <span>报警/检测</span>
-          <span>红色=撞刀风险</span>
+          <span>报警数量 <strong id="alarmCount">0</strong></span>
         </div>
         <div class="log" id="log"></div>
+      </div>
+      <div class="hidden-metrics" aria-hidden="true">
+        <span id="boundsLabel">未生成</span>
+        <strong id="xRange">--</strong>
+        <strong id="yRange">--</strong>
+        <strong id="zRange">--</strong>
       </div>
     </section>
 
@@ -399,7 +397,7 @@
           <span><i class="dot green"></i><b>切削 G01/G02/G03</b></span>
           <span><i class="dot amber"></i><b>快速 G00</b></span>
           <span><i class="dot red"></i><b>撞刀点</b></span>
-          <span><i class="dot blue"></i><b>运动轨迹框</b></span>
+          <span><i class="dot blue"></i><b>刀具路径</b></span>
         </div>
         <div class="hud-pill">鼠标拖动旋转，滚轮缩放。<span class="mobile-note">手机可双指缩放。</span></div>
       </div>
