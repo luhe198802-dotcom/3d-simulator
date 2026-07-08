@@ -124,6 +124,45 @@
       box-shadow: 0 0 0 2px rgba(61, 214, 208, .12);
     }
 
+    .stock-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stock-field {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .stock-field input {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0d1012;
+      color: var(--text);
+      padding: 0 9px;
+      font: 700 13px Consolas, "Courier New", monospace;
+      outline: none;
+    }
+
+    .stock-field input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(61, 214, 208, .12);
+    }
+
+    .stock-generate {
+      grid-column: 1 / -1;
+      padding: 10px 9px;
+    }
+
+    .stock-form[data-shape="round"] .box-only { display: none; }
+    .stock-form[data-shape="box"] .round-only { display: none; }
+
     .button-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -349,8 +388,27 @@
           <span id="stockLabel">圆料 Ø32mm / 刀具 Ø5mm</span>
         </div>
         <div class="mode-row">
-          <button class="mode-btn active" id="smallStock">小材料 Ø32</button>
-          <button class="mode-btn" id="largeStock">大材料 200×200</button>
+          <button class="mode-btn active" id="roundStock">棒材</button>
+          <button class="mode-btn" id="boxStock">长方形</button>
+        </div>
+        <div class="stock-form" id="stockForm" data-shape="round">
+          <label class="stock-field round-only">
+            <span>直径 D mm</span>
+            <input id="stockDiameter" type="number" min="5" max="300" step="1" value="32">
+          </label>
+          <label class="stock-field box-only">
+            <span>长度 X mm</span>
+            <input id="stockWidthInput" type="number" min="5" max="500" step="1" value="200">
+          </label>
+          <label class="stock-field box-only">
+            <span>宽度 Y mm</span>
+            <input id="stockDepthInput" type="number" min="5" max="500" step="1" value="200">
+          </label>
+          <label class="stock-field">
+            <span>高度 Z mm</span>
+            <input id="stockHeightInput" type="number" min="1" max="100" step="0.5" value="8">
+          </label>
+          <button class="stock-generate" id="generateStock">生成棒材</button>
         </div>
         <textarea id="gcode" spellcheck="false" placeholder="请输入 G 代码，或点击加载实例..."></textarea>
         <div class="button-row">
@@ -422,33 +480,9 @@
     const SPEED = 0.22;
     const LARGE_STOCK_SPEED_MULTIPLIER = 9;
 
-    const STOCK_MODES = {
-      small: {
-        label: '圆料 Ø32mm / 刀具 Ø5mm',
-        type: 'round',
-        radius: 16,
-        width: 32,
-        depth: 32,
-        height: 8,
-        bedSize: 44,
-        gridSize: 44,
-        gridDivisions: 22,
-        camera: [0, -52, 30],
-        target: [0, 0, -2]
-      },
-      large: {
-        label: '方料 200×200mm / 刀具 Ø5mm',
-        type: 'square',
-        radius: 142,
-        width: 200,
-        depth: 200,
-        height: 8,
-        bedSize: 230,
-        gridSize: 220,
-        gridDivisions: 22,
-        camera: [0, -260, 150],
-        target: [0, 0, -2]
-      }
+    const DEFAULT_STOCK = {
+      round: { diameter: 32, height: 8 },
+      box: { width: 200, depth: 200, height: 8 }
     };
 
     const crossDemoCode = `O3001 (小材料十字槽实例)
@@ -473,8 +507,14 @@ M30`;
       gcode: document.getElementById('gcode'),
       loadDemo: document.getElementById('loadDemo'),
       stockLabel: document.getElementById('stockLabel'),
-      smallStock: document.getElementById('smallStock'),
-      largeStock: document.getElementById('largeStock'),
+      stockForm: document.getElementById('stockForm'),
+      roundStock: document.getElementById('roundStock'),
+      boxStock: document.getElementById('boxStock'),
+      stockDiameter: document.getElementById('stockDiameter'),
+      stockWidthInput: document.getElementById('stockWidthInput'),
+      stockDepthInput: document.getElementById('stockDepthInput'),
+      stockHeightInput: document.getElementById('stockHeightInput'),
+      generateStock: document.getElementById('generateStock'),
       status: document.getElementById('machineStatus'),
       lamp: document.getElementById('lamp'),
       pos: document.getElementById('pos'),
@@ -494,7 +534,8 @@ M30`;
     let renderer, scene, camera, controls;
     let toolGroup, pathGroup, surfaceCutGroup, crashGroup, boundsHelper;
     let bedMesh, stockMesh;
-    let activeStockMode = 'small';
+    let activeStockShape = 'round';
+    let activeStock = createStockConfig('round', DEFAULT_STOCK.round);
     let commands = [];
     let pathPoints = [];
     let alarms = [];
@@ -512,8 +553,9 @@ M30`;
       elements.gcode.value = getDemoCode();
       analyzeProgram();
     });
-    elements.smallStock.addEventListener('click', () => setStockMode('small'));
-    elements.largeStock.addEventListener('click', () => setStockMode('large'));
+    elements.roundStock.addEventListener('click', () => setStockShape('round'));
+    elements.boxStock.addEventListener('click', () => setStockShape('box'));
+    elements.generateStock.addEventListener('click', generateStockFromInputs);
     document.getElementById('run').addEventListener('click', runSimulation);
     document.getElementById('reset').addEventListener('click', () => resetSimulation(true));
     document.getElementById('analyze').addEventListener('click', analyzeProgram);
@@ -825,15 +867,87 @@ M30`;
     }
 
     function getStock() {
-      return STOCK_MODES[activeStockMode];
+      return activeStock;
     }
 
-    function setStockMode(mode) {
-      if (activeStockMode === mode) return;
-      activeStockMode = mode;
+    function setStockShape(shape) {
+      activeStockShape = shape;
+      elements.stockForm.dataset.shape = shape;
+      elements.roundStock.classList.toggle('active', shape === 'round');
+      elements.boxStock.classList.toggle('active', shape === 'box');
+      elements.generateStock.textContent = shape === 'round' ? '生成棒材' : '生成长方形';
+    }
+
+    function generateStockFromInputs() {
+      running = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      activeStock = createStockConfig(activeStockShape, readStockInputs(activeStockShape));
       rebuildStockScene();
       applyCameraForStock();
-      resetSimulation(true);
+      resetSimulation(false);
+      if (elements.gcode.value.trim()) analyzeProgram();
+    }
+
+    function readStockInputs(shape) {
+      const height = clampNumber(elements.stockHeightInput.value, 1, 100, 8);
+      if (shape === 'round') {
+        return {
+          diameter: clampNumber(elements.stockDiameter.value, 5, 300, 32),
+          height
+        };
+      }
+      return {
+        width: clampNumber(elements.stockWidthInput.value, 5, 500, 200),
+        depth: clampNumber(elements.stockDepthInput.value, 5, 500, 200),
+        height
+      };
+    }
+
+    function clampNumber(value, min, max, fallback) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return fallback;
+      return Math.max(min, Math.min(max, number));
+    }
+
+    function createStockConfig(shape, values) {
+      const height = values.height;
+      const isRound = shape === 'round';
+      const diameter = isRound ? values.diameter : null;
+      const width = isRound ? diameter : values.width;
+      const depth = isRound ? diameter : values.depth;
+      const radius = isRound ? diameter / 2 : Math.hypot(width, depth) / 2;
+      const maxSide = Math.max(width, depth);
+      const isLarge = maxSide >= 100;
+      const tableMargin = Math.max(isLarge ? 30 : 12, maxSide * .18);
+      const bedSize = Math.max(44, maxSide + tableMargin);
+      const cameraDistance = Math.max(52, maxSide * 1.3);
+      const cameraHeight = Math.max(30, maxSide * .75);
+      const label = isRound
+        ? `棒材 Ø${formatStockNumber(diameter)}×${formatStockNumber(height)}mm / 刀具 Ø5mm`
+        : `长方形 ${formatStockNumber(width)}×${formatStockNumber(depth)}×${formatStockNumber(height)}mm / 刀具 Ø5mm`;
+      const areaLabel = isRound
+        ? `Ø${formatStockNumber(diameter)} 棒材`
+        : `${formatStockNumber(width)}×${formatStockNumber(depth)} 长方形`;
+
+      return {
+        label,
+        areaLabel,
+        type: isRound ? 'round' : 'square',
+        isLarge,
+        radius,
+        width,
+        depth,
+        height,
+        bedSize,
+        gridSize: bedSize,
+        gridDivisions: isLarge ? 22 : 16,
+        camera: [0, -cameraDistance, cameraHeight],
+        target: [0, 0, -2]
+      };
+    }
+
+    function formatStockNumber(value) {
+      return Number.isInteger(value) ? String(value) : value.toFixed(1);
     }
 
     function rebuildStockScene() {
@@ -862,16 +976,14 @@ M30`;
       scene.add(stockMesh);
 
       elements.stockLabel.textContent = stock.label;
-      elements.loadDemo.textContent = activeStockMode === 'large' ? '加载花形实例' : '加载十字实例';
-      elements.smallStock.classList.toggle('active', activeStockMode === 'small');
-      elements.largeStock.classList.toggle('active', activeStockMode === 'large');
+      elements.loadDemo.textContent = shouldUseLargeDemo(stock) ? '加载花形实例' : '加载十字实例';
     }
 
     function createMachineTable(stock) {
       const group = new THREE.Group();
-      const tableSize = stock.bedSize + (stock.type === 'square' ? 36 : 14);
+      const tableSize = stock.bedSize + (stock.isLarge ? 36 : 14);
       const tableTopZ = -stock.height - 0.18;
-      const tableThickness = stock.type === 'square' ? 5.2 : 3.4;
+      const tableThickness = stock.isLarge ? 5.2 : 3.4;
       const topMaterial = new THREE.MeshStandardMaterial({
         color: 0x303b43,
         roughness: .52,
@@ -938,9 +1050,9 @@ M30`;
         group.add(rail);
       });
 
-      const slotCount = stock.type === 'square' ? 7 : 5;
+      const slotCount = stock.isLarge ? 7 : 5;
       const slotGap = tableSize / (slotCount + 1);
-      const slotWidth = stock.type === 'square' ? 6.4 : 1.65;
+      const slotWidth = stock.isLarge ? 6.4 : 1.65;
       const slotDepth = .12;
       const lipWidth = slotWidth * .24;
       for (let i = 1; i <= slotCount; i++) {
@@ -949,7 +1061,7 @@ M30`;
       }
 
       addWorkholding(group, stock, tableTopZ, tableSize, clampMaterial, grooveMaterial, lipMaterial);
-      addTableBoltPattern(group, tableSize, tableTopZ, stock.type === 'square', grooveMaterial, lipMaterial);
+      addTableBoltPattern(group, tableSize, tableTopZ, stock.isLarge, grooveMaterial, lipMaterial);
       addTableScratches(group, tableSize, tableTopZ + .18);
 
       return group;
@@ -986,7 +1098,7 @@ M30`;
     }
 
     function addWorkholding(group, stock, tableTopZ, tableSize, clampMaterial, grooveMaterial, lipMaterial) {
-      const isLarge = stock.type === 'square';
+      const isLarge = stock.isLarge;
       const clampLength = isLarge ? 30 : 9.5;
       const clampWidth = isLarge ? 8.4 : 2.8;
       const clampHeight = isLarge ? 1.2 : .48;
@@ -995,9 +1107,7 @@ M30`;
       const stockHalfX = stock.width / 2;
       const stockHalfY = stock.depth / 2;
       const overlap = isLarge ? 3.8 : 1.4;
-      const clampYs = isLarge
-        ? [-stock.depth * .28, stock.depth * .28]
-        : [-stock.radius * .42, stock.radius * .42];
+      const clampYs = [-stock.depth * .28, stock.depth * .28];
 
       [-1, 1].forEach(sign => {
         clampYs.forEach(y => {
@@ -1042,7 +1152,7 @@ M30`;
         });
       });
 
-      if (isLarge) {
+      if (stock.type === 'square') {
         [-1, 1].forEach(sign => {
           const rail = new THREE.Mesh(
             new THREE.BoxGeometry(stock.width * .7, 3.2, .5),
@@ -1131,7 +1241,11 @@ M30`;
     }
 
     function getDemoCode() {
-      return activeStockMode === 'large' ? createFlowerDemoCode() : crossDemoCode;
+      return shouldUseLargeDemo(getStock()) ? createFlowerDemoCode() : crossDemoCode;
+    }
+
+    function shouldUseLargeDemo(stock) {
+      return stock.type === 'square' && Math.min(stock.width, stock.depth) >= 120;
     }
 
     function createFlowerDemoCode() {
@@ -1355,7 +1469,7 @@ M30`;
         }
         if (!p.rapid && p.z <= 0 && !inStockArea && !seen.has(key + 'outside')) {
           seen.add(key + 'outside');
-          result.push({ type: 'warn', line: p.line, point: p, message: `切削点超出 ${stock.type === 'round' ? 'Ø32 圆料' : '200×200 方料'} 范围。` });
+          result.push({ type: 'warn', line: p.line, point: p, message: `切削点超出 ${stock.areaLabel} 范围。` });
         }
       });
 
@@ -1479,8 +1593,9 @@ M30`;
       const cx = width / 2;
       const cy = height / 2;
       const stock = getStock();
-      const viewSize = stock.type === 'round' ? 42 : 230;
-      const gridStep = stock.type === 'round' ? 5 : 25;
+      const maxSide = Math.max(stock.width, stock.depth);
+      const viewSize = Math.max(42, maxSide * 1.18);
+      const gridStep = maxSide >= 120 ? 25 : 5;
       const scale = Math.min(width, height) / viewSize;
       ctx.clearRect(0, 0, width, height);
       ctx.fillStyle = '#0d1012';
@@ -1566,7 +1681,9 @@ M30`;
       ctx.font = `${10 * dpr}px Consolas, monospace`;
       ctx.fillText('X', width - 18 * dpr, cy - 5 * dpr);
       ctx.fillText('Y', cx + 6 * dpr, 17 * dpr);
-      const stockText = stock.type === 'round' ? 'Ø32' : '200x200';
+      const stockText = stock.type === 'round'
+        ? `Ø${formatStockNumber(stock.width)}`
+        : `${formatStockNumber(stock.width)}x${formatStockNumber(stock.depth)}`;
       const labelY = stock.type === 'round' ? cy - stock.radius * scale - 7 * dpr : cy - stock.depth * scale / 2 - 7 * dpr;
       ctx.fillText(stockText, cx - 20 * dpr, labelY);
     }
@@ -1931,7 +2048,7 @@ M30`;
     }
 
     function getSimulationSpeedMultiplier() {
-      return activeStockMode === 'large' ? LARGE_STOCK_SPEED_MULTIPLIER : 1;
+      return getStock().isLarge ? LARGE_STOCK_SPEED_MULTIPLIER : 1;
     }
 
     function clearGroup(group) {
