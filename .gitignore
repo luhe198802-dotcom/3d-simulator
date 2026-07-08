@@ -1,6 +1,7 @@
 node_modules/
 .env
 .env.*
+api-config.json
 *.log
 .edge-cdp-preview/
 .edge-cdp-cut/

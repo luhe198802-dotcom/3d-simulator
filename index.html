@@ -270,6 +270,128 @@
     .log-item.warn { border-left-color: var(--amber); color: #ffd88c; }
     .log-item.crash { border-left-color: var(--red); color: #ffb5b5; }
 
+    .agent-button {
+      grid-column: 1 / -1;
+      background: #5aa9f0;
+      color: #06101a;
+    }
+
+    .agent-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(0, 0, 0, .62);
+    }
+
+    .agent-modal.open { display: flex; }
+
+    .agent-dialog {
+      width: min(760px, 96vw);
+      max-height: min(760px, 92vh);
+      display: grid;
+      grid-template-rows: auto minmax(220px, 1fr) auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.45);
+    }
+
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .agent-header strong {
+      color: var(--cyan);
+      font-size: 15px;
+    }
+
+    .agent-close {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      background: var(--panel-soft);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .agent-chat {
+      overflow: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #0d1012;
+    }
+
+    .agent-message {
+      max-width: 88%;
+      border-radius: 8px;
+      padding: 9px 10px;
+      color: var(--text);
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .agent-message.user {
+      align-self: flex-end;
+      background: rgba(61, 214, 208, .16);
+      border: 1px solid rgba(61, 214, 208, .34);
+    }
+
+    .agent-message.assistant {
+      align-self: flex-start;
+      background: #151b20;
+      border: 1px solid var(--line);
+    }
+
+    .agent-message.error {
+      align-self: flex-start;
+      background: rgba(240, 90, 90, .13);
+      border: 1px solid rgba(240, 90, 90, .42);
+      color: #ffb5b5;
+    }
+
+    .agent-compose {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .agent-compose textarea {
+      height: 88px;
+      min-height: 72px;
+      max-height: 150px;
+      resize: vertical;
+    }
+
+    .agent-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .agent-actions button {
+      min-width: 112px;
+    }
+
+    .agent-actions button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
     .viewport {
       position: relative;
       min-height: 0;
@@ -419,6 +541,7 @@
           <button class="secondary" id="run">开始仿真</button>
           <button class="danger" id="reset">重置</button>
           <button id="analyze">只检测撞刀</button>
+          <button class="agent-button" id="openAgent">编程智能体</button>
         </div>
       </div>
 
@@ -468,6 +591,23 @@
       </div>
     </section>
   </main>
+
+  <div class="agent-modal" id="agentModal" aria-hidden="true">
+    <div class="agent-dialog" role="dialog" aria-modal="true" aria-labelledby="agentTitle">
+      <div class="agent-header">
+        <strong id="agentTitle">编程智能体</strong>
+        <button class="agent-close" id="closeAgent" title="关闭">×</button>
+      </div>
+      <div class="agent-chat" id="agentChat"></div>
+      <div class="agent-compose">
+        <textarea id="agentInput" placeholder="例如：生成一个十字槽程序，深度 1.5mm，进给 F180，安全高度 Z15。"></textarea>
+        <div class="agent-actions">
+          <button id="insertAgentCode" disabled>放入编辑器</button>
+          <button id="sendAgent">发送生成</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import * as THREE from './libs/three.module.js';
@@ -531,7 +671,14 @@ M30`;
       zRange: document.getElementById('zRange'),
       boundsLabel: document.getElementById('boundsLabel'),
       alarmCount: document.getElementById('alarmCount'),
-      log: document.getElementById('log')
+      log: document.getElementById('log'),
+      openAgent: document.getElementById('openAgent'),
+      closeAgent: document.getElementById('closeAgent'),
+      agentModal: document.getElementById('agentModal'),
+      agentChat: document.getElementById('agentChat'),
+      agentInput: document.getElementById('agentInput'),
+      sendAgent: document.getElementById('sendAgent'),
+      insertAgentCode: document.getElementById('insertAgentCode')
     };
 
     let renderer, scene, camera, controls;
@@ -548,6 +695,8 @@ M30`;
     let simIndex = 0;
     let segmentT = 0;
     let currentPos = { x: 0, y: 0, z: INITIAL_Z };
+    let agentHistory = [];
+    let latestAgentGCode = '';
 
     initScene();
     resetSimulation(false);
@@ -562,6 +711,16 @@ M30`;
     document.getElementById('run').addEventListener('click', runSimulation);
     document.getElementById('reset').addEventListener('click', () => resetSimulation(true));
     document.getElementById('analyze').addEventListener('click', analyzeProgram);
+    elements.openAgent.addEventListener('click', openAgentModal);
+    elements.closeAgent.addEventListener('click', closeAgentModal);
+    elements.agentModal.addEventListener('click', event => {
+      if (event.target === elements.agentModal) closeAgentModal();
+    });
+    elements.sendAgent.addEventListener('click', sendAgentMessage);
+    elements.insertAgentCode.addEventListener('click', insertLatestAgentCode);
+    elements.agentInput.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) sendAgentMessage();
+    });
     window.addEventListener('resize', resizeRenderer);
 
     function initScene() {
@@ -951,6 +1110,92 @@ M30`;
 
     function formatStockNumber(value) {
       return Number.isInteger(value) ? String(value) : value.toFixed(1);
+    }
+
+    function openAgentModal() {
+      elements.agentModal.classList.add('open');
+      elements.agentModal.setAttribute('aria-hidden', 'false');
+      if (!agentHistory.length) {
+        appendAgentMessage('assistant', '你好，我可以根据当前材料尺寸生成安全的 G 代码。请描述要加工的形状、深度、进给和路径要求。');
+      }
+      elements.agentInput.focus();
+    }
+
+    function closeAgentModal() {
+      elements.agentModal.classList.remove('open');
+      elements.agentModal.setAttribute('aria-hidden', 'true');
+    }
+
+    function appendAgentMessage(role, text) {
+      const div = document.createElement('div');
+      div.className = `agent-message ${role}`;
+      div.textContent = text;
+      elements.agentChat.appendChild(div);
+      elements.agentChat.scrollTop = elements.agentChat.scrollHeight;
+    }
+
+    function getAgentStockContext() {
+      const stock = getStock();
+      return {
+        type: stock.type,
+        width: stock.width,
+        depth: stock.depth,
+        height: stock.height,
+        radius: stock.radius,
+        label: stock.label
+      };
+    }
+
+    async function sendAgentMessage() {
+      const content = elements.agentInput.value.trim();
+      if (!content || elements.sendAgent.disabled) return;
+
+      elements.agentInput.value = '';
+      elements.sendAgent.disabled = true;
+      elements.sendAgent.textContent = '生成中...';
+      elements.insertAgentCode.disabled = true;
+      latestAgentGCode = '';
+
+      agentHistory.push({ role: 'user', content });
+      appendAgentMessage('user', content);
+
+      try {
+        const response = await fetch('/api/programming-agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: agentHistory,
+            stock: getAgentStockContext(),
+            currentGcode: elements.gcode.value
+          })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || '编程智能体请求失败。');
+
+        const reply = data.reply || '没有收到有效回复。';
+        latestAgentGCode = data.gcode || extractGCodeFromText(reply);
+        agentHistory.push({ role: 'assistant', content: reply });
+        appendAgentMessage('assistant', reply);
+        elements.insertAgentCode.disabled = !latestAgentGCode;
+      } catch (error) {
+        appendAgentMessage('error', error.message || '编程智能体请求失败。');
+      } finally {
+        elements.sendAgent.disabled = false;
+        elements.sendAgent.textContent = '发送生成';
+      }
+    }
+
+    function extractGCodeFromText(text) {
+      const fenced = text.match(/```(?:gcode|nc|tap)?\s*([\s\S]*?)```/i);
+      if (fenced) return fenced[1].trim();
+      return '';
+    }
+
+    function insertLatestAgentCode() {
+      if (!latestAgentGCode) return;
+      elements.gcode.value = latestAgentGCode;
+      closeAgentModal();
+      analyzeProgram();
     }
 
     function rebuildStockScene() {

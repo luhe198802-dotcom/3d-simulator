@@ -1,0 +1,7 @@
+{
+  "provider": "deepseek",
+  "baseUrl": "https://api.deepseek.com",
+  "apiKey": "在这里填写你的 DeepSeek API Key",
+  "model": "deepseek-v4-flash",
+  "temperature": 0.2
+}
