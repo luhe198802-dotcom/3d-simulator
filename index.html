@@ -399,7 +399,7 @@
           <span><i class="dot red"></i><b>撞刀点</b></span>
           <span><i class="dot blue"></i><b>刀具路径</b></span>
         </div>
-        <div class="hud-pill">鼠标拖动旋转，滚轮缩放。<span class="mobile-note">手机可双指缩放。</span></div>
+        <div class="hud-pill">视角已锁定，滚轮缩放。<span class="mobile-note">手机可双指缩放。</span></div>
       </div>
       <div class="top-view">
         <canvas id="topView"></canvas>
@@ -535,6 +535,9 @@ M30`;
 
       controls = new OrbitControls(camera, renderer.domElement);
       controls.target.set(0, 0, -2);
+      controls.enableRotate = false;
+      controls.enablePan = false;
+      controls.enableZoom = true;
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
       controls.update();
