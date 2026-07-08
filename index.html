@@ -413,7 +413,9 @@
     import { OrbitControls } from './libs/OrbitControls.js';
 
     const TOOL_RADIUS = 2.5;
-    const MAX_SAFE_CUT_DEPTH = 2.1;
+    const CUT_DEPTH_WARN = 2.0;
+    const CUT_DEPTH_CRASH = 4.0;
+    const MAX_SPINDLE_SPEED = 800;
     const INITIAL_Z = 15;
     const TOOL_BODY_HEIGHT = 15;
     const STEP_MM = 0.6;
@@ -452,7 +454,7 @@
     const crossDemoCode = `O3001 (小材料十字槽实例)
 G21 G17 G90
 G00 X0 Y0 Z15
-M03 S3000
+M03 S800
 G00 X-12 Y0 Z15
 G01 Z-2 F100
 G01 X12 Y0 F240
@@ -1137,7 +1139,7 @@ M30`;
         'O3003 (大材料花形加工实例)',
         'G21 G17 G90',
         'G00 X0 Y0 Z15',
-        'M03 S3000'
+        'M03 S800'
       ];
 
       const points = [];
@@ -1166,7 +1168,8 @@ M30`;
     function parseGCode(code) {
       const rows = code.split(/\r?\n/);
       const result = [];
-      let modal = { g: 0, x: 0, y: 0, z: INITIAL_Z, f: null };
+      const events = [];
+      let modal = { g: 0, x: 0, y: 0, z: INITIAL_Z, f: null, spindleOn: false, spindleSpeed: null };
 
       rows.forEach((raw, index) => {
         const cleaned = raw.replace(/\(.*?\)/g, '').replace(/;.*/, '').trim();
@@ -1180,6 +1183,8 @@ M30`;
           start: { x: modal.x, y: modal.y, z: modal.z },
           end: { x: modal.x, y: modal.y, z: modal.z },
           feed: modal.f,
+          spindleOn: modal.spindleOn,
+          spindleSpeed: modal.spindleSpeed,
           hasMove: false,
           rapid: false,
           arc: false,
@@ -1187,6 +1192,8 @@ M30`;
           i: 0,
           j: 0
         };
+        let speedCommand = null;
+        let spindleCommand = null;
 
         tokens.forEach(token => {
           const key = token[0].toUpperCase();
@@ -1211,6 +1218,13 @@ M30`;
           } else if (key === 'F') {
             modal.f = value;
             cmd.feed = value;
+          } else if (key === 'S') {
+            modal.spindleSpeed = value;
+            speedCommand = value;
+          } else if (key === 'M') {
+            spindleCommand = value;
+            if (value === 3 || value === 4) modal.spindleOn = true;
+            if (value === 5) modal.spindleOn = false;
           } else if (key === 'I') {
             cmd.i = value;
           } else if (key === 'J') {
@@ -1222,9 +1236,21 @@ M30`;
         cmd.rapid = cmd.g === 0;
         cmd.arc = cmd.g === 2 || cmd.g === 3;
         cmd.cw = cmd.g === 2;
+        cmd.spindleOn = modal.spindleOn;
+        cmd.spindleSpeed = modal.spindleSpeed;
+        events.push({
+          line: index + 1,
+          raw: raw.trim(),
+          speedCommand,
+          spindleCommand,
+          spindleOn: modal.spindleOn,
+          spindleSpeed: modal.spindleSpeed,
+          hasMove: cmd.hasMove
+        });
         if (cmd.hasMove) result.push(cmd);
       });
 
+      result.events = events;
       return result;
     }
 
@@ -1237,7 +1263,7 @@ M30`;
         samples.forEach(point => {
           const last = points[points.length - 1];
           length += distance(last, point);
-          points.push({ ...point, rapid: cmd.rapid, line: cmd.line, raw: cmd.raw, g: cmd.g });
+          points.push({ ...point, rapid: cmd.rapid, line: cmd.line, raw: cmd.raw, g: cmd.g, spindleOn: cmd.spindleOn, spindleSpeed: cmd.spindleSpeed });
         });
       });
 
@@ -1279,37 +1305,69 @@ M30`;
       });
     }
 
-    function detectAlarms(points) {
+    function detectAlarms(points, cmds = []) {
       const result = [];
       const seen = new Set();
+      const stock = getStock();
+      const events = cmds.events || [];
+
+      events.forEach(event => {
+        if (event.speedCommand !== null && event.speedCommand > MAX_SPINDLE_SPEED && !seen.has(`${event.line}-speed`)) {
+          seen.add(`${event.line}-speed`);
+          result.push({
+            type: 'warn',
+            line: event.line,
+            message: `主轴转速 S${event.speedCommand} 超过上限 S${MAX_SPINDLE_SPEED}，请降低转速后再加工。`
+          });
+        }
+      });
+
       points.forEach((p, index) => {
         if (index === 0) return;
         const prev = points[index - 1];
-        const stock = getStock();
         const inStockArea = isInsideStockArea(p, TOOL_RADIUS);
         const xyMove = Math.hypot(p.x - prev.x, p.y - prev.y) > 0.01;
         const rapidDown = p.z < prev.z - 0.01;
         const insideMaterial = p.z < -0.05;
         const key = `${p.line}-`;
 
-        if (p.rapid && insideMaterial && inStockArea && (rapidDown || xyMove) && !seen.has(key + 'rapid')) {
-          seen.add(key + 'rapid');
-          const reason = xyMove ? '未抬刀就在材料内快速横移' : '快速下刀进入材料内部';
-          result.push({ type: 'crash', line: p.line, point: p, message: `G00 ${reason}，当前 Z${p.z.toFixed(2)}，存在撞刀风险。` });
+        if (p.rapid && insideMaterial && inStockArea && rapidDown && !seen.has(key + 'rapid-down')) {
+          seen.add(key + 'rapid-down');
+          result.push({ type: 'crash', line: p.line, point: p, message: `G00 快速下刀进入材料，当前 Z${p.z.toFixed(2)}，存在撞刀风险。` });
         }
-        if (!p.rapid && p.z < -MAX_SAFE_CUT_DEPTH && !seen.has(key + 'deep')) {
-          seen.add(key + 'deep');
-          result.push({ type: 'crash', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过安全深度 ${MAX_SAFE_CUT_DEPTH}mm，按撞刀风险处理。` });
+        if (p.rapid && insideMaterial && inStockArea && xyMove && !seen.has(key + 'rapid-xy')) {
+          seen.add(key + 'rapid-xy');
+          result.push({ type: 'crash', line: p.line, point: p, message: `G00 未抬刀就在材料内快速横移，当前 Z${p.z.toFixed(2)}，存在撞刀风险。` });
+        }
+        if (p.z < -stock.height && !seen.has(key + 'bottom')) {
+          seen.add(key + 'bottom');
+          result.push({ type: 'crash', line: p.line, point: p, message: `Z${p.z.toFixed(2)} 已低于工件底面 -${stock.height.toFixed(1)}mm，可能穿透工件或撞到工作台。` });
+        } else if (!p.rapid && p.z < -CUT_DEPTH_CRASH && !seen.has(key + 'deep-crash')) {
+          seen.add(key + 'deep-crash');
+          result.push({ type: 'crash', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过 ${CUT_DEPTH_CRASH.toFixed(1)}mm，切深过大。` });
+        } else if (!p.rapid && p.z < -CUT_DEPTH_WARN && !seen.has(key + 'deep-warn')) {
+          seen.add(key + 'deep-warn');
+          result.push({ type: 'warn', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过 ${CUT_DEPTH_WARN.toFixed(1)}mm，切深偏大，请确认工艺参数。` });
+        }
+        if (!p.rapid && p.z < 0 && !p.spindleOn && !seen.has(key + 'spindle-off')) {
+          seen.add(key + 'spindle-off');
+          result.push({ type: 'crash', line: p.line, point: p, message: '主轴未启动就开始切削，请先执行 M03/M04。' });
         }
         if (!p.rapid && p.z <= 0 && !inStockArea && !seen.has(key + 'outside')) {
           seen.add(key + 'outside');
           result.push({ type: 'warn', line: p.line, point: p, message: `切削点超出 ${stock.type === 'round' ? 'Ø32 圆料' : '200×200 方料'} 范围。` });
         }
-        if (!p.rapid && p.z < 0 && Math.abs(p.z) > TOOL_RADIUS * 2.4 && !seen.has(key + 'tool')) {
-          seen.add(key + 'tool');
-          result.push({ type: 'warn', line: p.line, point: p, message: `下刀较深，请确认刀具伸出量和夹持长度。` });
-        }
       });
+
+      const lastPoint = points[points.length - 1];
+      if (lastPoint && lastPoint.z < -0.05) {
+        result.push({
+          type: 'warn',
+          line: lastPoint.line,
+          point: lastPoint,
+          message: `程序结束时刀具仍在材料内，当前 Z${lastPoint.z.toFixed(2)}，建议结束前抬刀到安全高度。`
+        });
+      }
       return result;
     }
 
@@ -1332,7 +1390,7 @@ M30`;
       const built = buildPath(commands);
       pathPoints = built.points;
       totalLength = built.length;
-      alarms = detectAlarms(pathPoints);
+      alarms = detectAlarms(pathPoints, commands);
 
       clearGroup(pathGroup);
       clearGroup(surfaceCutGroup);
