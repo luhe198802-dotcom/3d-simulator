@@ -1116,7 +1116,7 @@ M30`;
       elements.agentModal.classList.add('open');
       elements.agentModal.setAttribute('aria-hidden', 'false');
       if (!agentHistory.length) {
-        appendAgentMessage('assistant', '你好，我可以根据当前材料尺寸生成安全的 G 代码。请描述要加工的形状、深度、进给和路径要求。');
+        appendAgentMessage('assistant', '你好，我会按当前材料尺寸生成 G 代码。坐标约定：X0/Y0 是工件上表面中心，Z0 是上表面。请描述要加工的形状、深度、进给和路径要求。');
       }
       elements.agentInput.focus();
     }
@@ -1136,14 +1136,60 @@ M30`;
 
     function getAgentStockContext() {
       const stock = getStock();
+      const isRound = stock.type === 'round';
+      const xLimit = Math.max(0, stock.width / 2 - TOOL_RADIUS);
+      const yLimit = Math.max(0, stock.depth / 2 - TOOL_RADIUS);
+      const radialLimit = Math.max(0, stock.radius - TOOL_RADIUS);
       return {
-        type: stock.type,
+        type: isRound ? 'round' : 'box',
         width: stock.width,
         depth: stock.depth,
         height: stock.height,
         radius: stock.radius,
-        label: stock.label
+        label: stock.label,
+        origin: {
+          x: 'X0 是工件上表面中心',
+          y: 'Y0 是工件上表面中心',
+          z: 'Z0 是工件上表面，Z 负值进入材料',
+          bottomZ: -stock.height
+        },
+        tool: {
+          diameter: TOOL_RADIUS * 2,
+          radius: TOOL_RADIUS
+        },
+        safeArea: isRound
+          ? { type: 'round', toolCenterRadius: radialLimit }
+          : { type: 'box', xMin: -xLimit, xMax: xLimit, yMin: -yLimit, yMax: yLimit },
+        alarms: {
+          safeZ: INITIAL_Z,
+          maxSpindleSpeed: MAX_SPINDLE_SPEED,
+          cutDepthWarn: -CUT_DEPTH_WARN,
+          cutDepthCrash: -CUT_DEPTH_CRASH,
+          bottomZ: -stock.height,
+          rapidIntoMaterial: 'red',
+          rapidInsideMaterial: 'red',
+          spindleOffCutting: 'red',
+          outsideStockCutting: 'yellow',
+          endInsideMaterial: 'yellow'
+        }
       };
+    }
+
+    function formatAgentValidation(data) {
+      const issues = Array.isArray(data.validationIssues) ? data.validationIssues : [];
+      if (!data.gcode) {
+        return '\n\n校验结果：没有识别到可插入的 G 代码，已禁止放入编辑器。';
+      }
+      if (!issues.length) {
+        return `\n\n校验结果：已通过当前材料尺寸和报警规则。${data.repaired ? '（已自动修正一次）' : ''}`;
+      }
+      const lines = issues.map(issue => {
+        const line = issue.line ? `第 ${issue.line} 行` : '整段程序';
+        const level = issue.type === 'crash' ? '红色' : '黄色';
+        return `- ${line} ${level}：${issue.message}`;
+      });
+      const repairNote = data.repairError ? `\n自动修正失败：${data.repairError}` : '';
+      return `\n\n校验结果：未通过当前材料尺寸/报警规则，已禁止直接放入编辑器。\n${lines.join('\n')}${repairNote}`;
     }
 
     async function sendAgentMessage() {
@@ -1172,11 +1218,12 @@ M30`;
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || '编程智能体请求失败。');
 
-        const reply = data.reply || '没有收到有效回复。';
+        const validationIssues = Array.isArray(data.validationIssues) ? data.validationIssues : [];
+        const reply = `${data.reply || '没有收到有效回复。'}${formatAgentValidation(data)}`;
         latestAgentGCode = data.gcode || extractGCodeFromText(reply);
         agentHistory.push({ role: 'assistant', content: reply });
         appendAgentMessage('assistant', reply);
-        elements.insertAgentCode.disabled = !latestAgentGCode;
+        elements.insertAgentCode.disabled = !latestAgentGCode || validationIssues.length > 0;
       } catch (error) {
         appendAgentMessage('error', error.message || '编程智能体请求失败。');
       } finally {
