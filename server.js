@@ -6,11 +6,19 @@ const rootDir = resolve(process.cwd());
 const port = Number(process.env.PORT || 8000);
 const configPath = join(rootDir, 'api-config.json');
 const TOOL_RADIUS = 2.5;
-const CUT_DEPTH_WARN = 2.0;
-const CUT_DEPTH_CRASH = 4.0;
 const MAX_SPINDLE_SPEED = 800;
 const SAFE_Z = 15;
 const STEP_MM = 0.6;
+const TOOL_TYPES = {
+  endmill: '立铣刀',
+  drill: '钻头',
+  facemill: '平面铣刀'
+};
+const DEFAULT_TOOL_MAGAZINE = {
+  1: { type: 'facemill', diameter: 25 },
+  2: { type: 'endmill', diameter: 5 },
+  3: { type: 'drill', diameter: 4 }
+};
 
 const mimeTypes = {
   '.html': 'text/html; charset=utf-8',
@@ -101,19 +109,58 @@ function normalizeStock(input = {}) {
   return { type, width, depth, height, radius };
 }
 
-function getAgentSafeAreaText(stock) {
+function normalizeTool(input = {}) {
+  const diameter = toPositiveNumber(input.diameter, TOOL_RADIUS * 2);
+  const cuttingLength = toPositiveNumber(input.cuttingLength, 12);
+  const overhang = Math.max(cuttingLength, toPositiveNumber(input.overhang, 20));
+  const type = TOOL_TYPES[input.type] ? input.type : 'endmill';
+  return {
+    type,
+    label: TOOL_TYPES[type],
+    diameter,
+    radius: diameter / 2,
+    cuttingLength,
+    overhang,
+    safeZ: toPositiveNumber(input.safeZ, SAFE_Z),
+    maxSpindleSpeed: MAX_SPINDLE_SPEED
+  };
+}
+
+function normalizeMode(value) {
+  return value === 'advanced' ? 'advanced' : 'beginner';
+}
+
+function normalizeToolMagazine(input = {}) {
+  return Object.fromEntries([1, 2, 3].map(id => {
+    const source = input[id] || input[String(id)] || DEFAULT_TOOL_MAGAZINE[id];
+    return [id, normalizeTool(source)];
+  }));
+}
+
+function normalizeProgrammingContext(payload = {}) {
+  const stockInput = payload.stock || {};
+  return {
+    mode: normalizeMode(payload.mode || stockInput.mode),
+    stock: normalizeStock(stockInput),
+    tool: normalizeTool(stockInput.tool || payload.tool || {}),
+    toolMagazine: normalizeToolMagazine(stockInput.toolMagazine || payload.toolMagazine || {})
+  };
+}
+
+function getAgentSafeAreaText(stock, tool) {
   if (stock.type === 'round') {
-    const usableRadius = Math.max(0, stock.radius - TOOL_RADIUS);
+    const usableRadius = Math.max(0, stock.radius - tool.radius);
     return `棒材刀具中心安全边界：sqrt(X^2 + Y^2) <= ${formatMm(usableRadius)}mm（已扣除刀具半径）。`;
   }
 
-  const xLimit = Math.max(0, stock.width / 2 - TOOL_RADIUS);
-  const yLimit = Math.max(0, stock.depth / 2 - TOOL_RADIUS);
+  const xLimit = Math.max(0, stock.width / 2 - tool.radius);
+  const yLimit = Math.max(0, stock.depth / 2 - tool.radius);
   return `长方形刀具中心安全边界：X 在 -${formatMm(xLimit)} 到 ${formatMm(xLimit)}mm，Y 在 -${formatMm(yLimit)} 到 ${formatMm(yLimit)}mm（已扣除刀具半径）。`;
 }
 
 function buildAgentMessages(payload) {
-  const stock = normalizeStock(payload.stock || {});
+  const context = normalizeProgrammingContext(payload);
+  const { mode, stock, tool, toolMagazine } = context;
   const currentGcode = String(payload.currentGcode || '').slice(0, 12000);
   const history = Array.isArray(payload.messages) ? payload.messages.slice(-8) : [];
   const safeHistory = history
@@ -126,23 +173,38 @@ function buildAgentMessages(payload) {
     ? safeHistory.filter((_, index) => index !== latestUserIndex)
     : safeHistory;
 
+  const toolDescription = item => `${item.label} Ø${formatMm(item.diameter)}mm，刃长 ${formatMm(item.cuttingLength)}mm，伸出量 ${formatMm(item.overhang)}mm，安全高度 Z${formatMm(item.safeZ)}`;
+  const modeRules = mode === 'advanced'
+    ? [
+        '当前模式：高级模式（允许换刀）。',
+        '只允许使用下面刀库中真实存在的 T01、T02、T03；不得创造 T04 或其他刀号。',
+        '根据工序选择最少且合适的刀具：平面铣刀用于端面，立铣刀用于槽/轮廓，钻头只做固定 XY 位置的 Z 向钻孔。',
+        '每次换刀必须先抬到该刀安全高度并 M05，再执行 Txx M06；换刀后必须重新 M03/M04 才能切削。',
+        ...[1, 2, 3].map(id => `T0${id}：${toolDescription(toolMagazine[id])}。${getAgentSafeAreaText(stock, toolMagazine[id])}`)
+      ]
+    : [
+        '当前模式：初级模式（严格单刀，禁止换刀）。',
+        `唯一可用刀具：${toolDescription(tool)}。`,
+        '程序中严禁出现任何 T 指令、M06/M6 或换刀说明；只能从头到尾使用当前刀具。',
+        `如果当前${tool.label}不适合用户要求，必须明确提示用户更换刀具或切到高级模式，不得假装已经换刀，也不得编造另一把刀。`,
+        getAgentSafeAreaText(stock, tool)
+      ];
+
   const stockText = [
     `当前材料类型：${stock.type === 'round' ? '棒材' : '长方形'}`,
     stock.type === 'round'
       ? `尺寸：直径 D=${formatMm(stock.width)}mm，高度 Z=${formatMm(stock.height)}mm，半径 R=${formatMm(stock.radius)}mm`
       : `尺寸：X=${formatMm(stock.width)}mm，Y=${formatMm(stock.depth)}mm，高度 Z=${formatMm(stock.height)}mm`,
     `坐标原点：X0 Y0 是工件上表面中心；Z0 是工件上表面；Z 负值进入材料；工件底面 Z=-${formatMm(stock.height)}mm。`,
-    `刀具：Ø${formatMm(TOOL_RADIUS * 2)}mm，半径 ${formatMm(TOOL_RADIUS)}mm。`,
-    getAgentSafeAreaText(stock),
+    ...modeRules,
     '报警规则：',
     `1. 主轴转速 S > ${MAX_SPINDLE_SPEED} 报警，必须使用 S${MAX_SPINDLE_SPEED} 或更低。`,
     '2. G00 进入材料或在材料内横移是红色报警；G00 只能在 Z0 以上或安全高度移动。',
     `3. Z < -${formatMm(stock.height)}mm 是红色报警，表示穿透工件/可能撞台。`,
-    `4. Z < -${formatMm(CUT_DEPTH_CRASH)}mm 是红色报警，切深过大。`,
-    `5. Z < -${formatMm(CUT_DEPTH_WARN)}mm 是黄色报警，切深偏大；为了通过校验，默认切深不要超过 ${formatMm(CUT_DEPTH_WARN)}mm。`,
-    '6. 主轴未启动就切削是报警；切削前必须 M03/M04。',
-    '7. 超出工件范围切削是黄色报警；路径必须在当前材料尺寸内。',
-    `8. 程序结束未抬刀是黄色报警；结束前必须 G00 Z${formatMm(SAFE_Z)}、M05、M30。`
+    '4. 每一段切深都不得超过当时所用刀具的刃长或伸出量。',
+    '5. 主轴未启动就切削是报警；切削前必须 M03/M04。',
+    '6. 超出工件范围切削是黄色报警；路径必须在当前材料尺寸内。',
+    `7. 程序结束未抬刀是黄色报警；结束前必须抬到当前刀具安全高度、M05、M30。`
   ].join('\n');
 
   return [
@@ -150,11 +212,13 @@ function buildAgentMessages(payload) {
       role: 'system',
       content: [
         '你是一个 CNC 三轴加工中心 G 代码编程智能体。',
-        '使用 Fanuc 风格 G 代码，单位 mm，默认 G21 G17 G90。',
+        '使用本教学仿真器支持的 Fanuc 风格子集：G00/G01/G02/G03、G17/G21/G90，以及 M03/M04/M05/M06/M30。',
+        '禁止使用仿真器不支持的固定循环 G81/G83、增量坐标 G91、刀补 G41/G42/G43、宏变量、子程序或任何未列出的 G/M 指令。钻孔必须展开为逐孔 G00 到安全高度、G01 竖直下钻、G00 抬刀。',
         '必须把 X0 Y0 当成工件上表面中心，Z0 当成工件上表面；不要把原点放在角上、侧边或工件底部。',
-        `输出必须优先安全：M03/M04 的 S 值必须 <=${MAX_SPINDLE_SPEED}，切削前主轴必须启动，结束前必须 G00 Z${formatMm(SAFE_Z)} 抬刀并 M05 M30。`,
+        `输出必须优先安全：M03/M04 的 S 值必须 <=${MAX_SPINDLE_SPEED}，切削前主轴必须启动，结束前必须抬到当前刀具安全高度并 M05 M30。`,
         '下刀必须使用 G01/G02/G03 的切削运动；严禁用 G00 下到 Z0 以下或在材料内横移。',
-        '生成前必须按当前材料尺寸自检，路径不能超出材料范围，默认切深控制在 2mm 以内。',
+        '生成前必须逐工序按当前材料、当前模式和实际刀具半径自检，路径不能超出材料范围，默认单层切深控制在 2mm 以内。',
+        '不得猜测界面中没有提供的刀具、刀号、材料属性或机床能力；参数不足时采用明确标注的保守教学值，无法安全完成时先说明需要用户调整什么。',
         '请根据用户意图生成可直接放入编辑器的 G 代码，并用 ```gcode 代码块包裹。',
         '如果用户需求尺寸或工艺不清楚，可以先给一个保守示例，但不要编造危险参数。'
       ].join('\n')
@@ -188,17 +252,19 @@ function lerpPoint(a, b, t) {
   };
 }
 
-function parseValidationGCode(code) {
+function parseValidationGCode(code, safeZ = SAFE_Z, mode = 'beginner', toolMagazine = {}) {
   const rows = code.split(/\r?\n/);
   const result = [];
   const events = [];
-  let modal = { g: 0, x: 0, y: 0, z: SAFE_Z, f: null, spindleOn: false, spindleSpeed: null };
+  let modal = { g: 0, x: 0, y: 0, z: safeZ, f: null, spindleOn: false, spindleSpeed: null, toolId: null };
+  let pendingToolId = null;
 
   rows.forEach((raw, index) => {
     const cleaned = raw.replace(/\(.*?\)/g, '').replace(/;.*/, '').trim();
     if (!cleaned) return;
 
     const tokens = cleaned.match(/[A-Za-z]-?\d+(?:\.\d+)?/g) || [];
+    const spindleBeforeLine = modal.spindleOn;
     const cmd = {
       line: index + 1,
       raw: raw.trim(),
@@ -217,6 +283,9 @@ function parseValidationGCode(code) {
     };
     let speedCommand = null;
     let spindleCommand = null;
+    let toolChangeRequest = false;
+    let tWord = null;
+    let hasSpindleStop = false;
 
     tokens.forEach(token => {
       const key = token[0].toUpperCase();
@@ -247,13 +316,33 @@ function parseValidationGCode(code) {
       } else if (key === 'M') {
         spindleCommand = value;
         if (value === 3 || value === 4) modal.spindleOn = true;
-        if (value === 5) modal.spindleOn = false;
+        if (value === 5) {
+          modal.spindleOn = false;
+          hasSpindleStop = true;
+        }
+        if (value === 6) toolChangeRequest = true;
+      } else if (key === 'T') {
+        tWord = Math.round(value);
       } else if (key === 'I') {
         cmd.i = value;
       } else if (key === 'J') {
         cmd.j = value;
       }
     });
+
+    if (mode === 'advanced' && toolChangeRequest) {
+      const targetId = tWord ?? pendingToolId;
+      if (targetId && toolMagazine[targetId]) {
+        cmd.toolChange = { line: index + 1, to: targetId, from: modal.toolId };
+        modal.toolId = targetId;
+        cmd.hasMove = true;
+      }
+      if (spindleCommand !== 3 && spindleCommand !== 4) modal.spindleOn = false;
+      pendingToolId = null;
+    } else if (mode === 'advanced' && tWord && toolMagazine[tWord]) {
+      pendingToolId = tWord;
+    }
+    cmd.toolId = modal.toolId;
 
     cmd.g = cmd.g ?? modal.g;
     cmd.rapid = cmd.g === 0;
@@ -266,8 +355,14 @@ function parseValidationGCode(code) {
       raw: raw.trim(),
       speedCommand,
       spindleCommand,
+      spindleBeforeLine,
+      hasSpindleStop,
       spindleOn: modal.spindleOn,
       spindleSpeed: modal.spindleSpeed,
+      tWord,
+      toolChangeRequest,
+      toolChange: cmd.toolChange,
+      toolId: modal.toolId,
       hasMove: cmd.hasMove
     });
     if (cmd.hasMove) result.push(cmd);
@@ -312,8 +407,8 @@ function sampleValidationCommand(cmd) {
   });
 }
 
-function buildValidationPath(cmds) {
-  const points = [{ x: 0, y: 0, z: SAFE_Z, rapid: true, line: 0, raw: 'START', spindleOn: false }];
+function buildValidationPath(cmds, safeZ = SAFE_Z) {
+  const points = [{ x: 0, y: 0, z: safeZ, rapid: true, line: 0, raw: 'START', spindleOn: false }];
 
   cmds.forEach(cmd => {
     const samples = sampleValidationCommand(cmd);
@@ -325,7 +420,9 @@ function buildValidationPath(cmds) {
         raw: cmd.raw,
         g: cmd.g,
         spindleOn: cmd.spindleOn,
-        spindleSpeed: cmd.spindleSpeed
+        spindleSpeed: cmd.spindleSpeed,
+        toolId: cmd.toolId,
+        toolChange: cmd.toolChange
       });
     });
   });
@@ -335,9 +432,10 @@ function buildValidationPath(cmds) {
 
 function isInsideValidationStock(point, stock, margin = 0) {
   if (stock.type === 'round') {
-    return Math.hypot(point.x, point.y) <= stock.radius + margin;
+    return Math.hypot(point.x, point.y) <= Math.max(0, stock.radius + margin);
   }
-  return Math.abs(point.x) <= stock.width / 2 + margin && Math.abs(point.y) <= stock.depth / 2 + margin;
+  return Math.abs(point.x) <= Math.max(0, stock.width / 2 + margin)
+    && Math.abs(point.y) <= Math.max(0, stock.depth / 2 + margin);
 }
 
 function addValidationIssue(issues, seen, type, line, key, message) {
@@ -347,21 +445,90 @@ function addValidationIssue(issues, seen, type, line, key, message) {
   issues.push({ type, level: type, line, message });
 }
 
-function validateGeneratedGCode(gcode, stockInput) {
-  const stock = normalizeStock(stockInput || {});
+function validateProgramCommands(gcode, mode, toolMagazine) {
+  const issues = [];
+  const seen = new Set();
+  const supportedG = new Set([0, 1, 2, 3, 17, 21, 90]);
+  const supportedM = new Set([3, 4, 5, 6, 30]);
+  let pendingToolId = null;
+  let pendingToolLine = 0;
+
+  gcode.split(/\r?\n/).forEach((raw, index) => {
+    const line = index + 1;
+    const cleaned = raw.replace(/\(.*?\)/g, '').replace(/;.*/, '').trim();
+    if (!cleaned) return;
+    const tokens = cleaned.match(/[A-Za-z]-?\d+(?:\.\d+)?/g) || [];
+    const gWords = tokens.filter(token => token[0].toUpperCase() === 'G').map(token => Number(token.slice(1)));
+    const mWords = tokens.filter(token => token[0].toUpperCase() === 'M').map(token => Number(token.slice(1)));
+    const tToken = tokens.find(token => token[0].toUpperCase() === 'T');
+    const tWord = tToken ? Math.round(Number(tToken.slice(1))) : null;
+
+    gWords.forEach(value => {
+      if (!supportedG.has(value)) {
+        addValidationIssue(issues, seen, 'crash', line, `unsupported-g${value}`, `当前仿真器不支持 G${String(value).padStart(2, '0')}，请只使用 G00/G01/G02/G03/G17/G21/G90。`);
+      }
+    });
+    mWords.forEach(value => {
+      if (!supportedM.has(value)) {
+        addValidationIssue(issues, seen, 'crash', line, `unsupported-m${value}`, `当前仿真器不支持 M${String(value).padStart(2, '0')}。`);
+      }
+    });
+
+    if (mode === 'beginner') {
+      if (tWord !== null) {
+        addValidationIssue(issues, seen, 'crash', line, 'beginner-tool', '初级模式禁止 T 刀号，只能使用界面当前选择的一把刀。');
+      }
+      if (mWords.includes(6)) {
+        addValidationIssue(issues, seen, 'crash', line, 'beginner-m06', '初级模式禁止 M06 换刀。');
+      }
+      return;
+    }
+
+    if (tWord !== null) {
+      if (!toolMagazine[tWord]) {
+        addValidationIssue(issues, seen, 'crash', line, 'unknown-tool', `刀库中不存在 T${String(tWord).padStart(2, '0')}，只能使用 T01/T02/T03。`);
+      } else {
+        pendingToolId = tWord;
+        pendingToolLine = line;
+      }
+    }
+
+    if (mWords.includes(6)) {
+      const targetId = tWord ?? pendingToolId;
+      if (!targetId || !toolMagazine[targetId]) {
+        addValidationIssue(issues, seen, 'crash', line, 'm06-no-tool', 'M06 前没有有效的 T01/T02/T03 选刀指令。');
+      }
+      pendingToolId = null;
+      pendingToolLine = 0;
+    }
+  });
+
+  if (mode === 'advanced' && pendingToolId) {
+    addValidationIssue(issues, seen, 'crash', pendingToolLine, 'tool-without-m06', `T${String(pendingToolId).padStart(2, '0')} 只预选了刀具，但没有执行 M06 换刀。`);
+  }
+  return issues;
+}
+
+function validateGeneratedGCode(gcode, contextInput = {}) {
+  const context = normalizeProgrammingContext(contextInput.stock ? contextInput : { stock: contextInput });
+  const { mode, stock, tool, toolMagazine } = context;
+  const commandIssues = validateProgramCommands(gcode, mode, toolMagazine);
   if (!gcode.trim()) {
     return [{ type: 'crash', level: 'crash', line: 0, message: '没有识别到可校验的 G 代码。' }];
   }
 
-  const cmds = parseValidationGCode(gcode);
+  const cmds = parseValidationGCode(gcode, tool.safeZ, mode, toolMagazine);
   if (!cmds.length) {
-    return [{ type: 'crash', level: 'crash', line: 0, message: 'G 代码里没有可执行的刀具移动。' }];
+    return [...commandIssues, { type: 'crash', level: 'crash', line: 0, message: 'G 代码里没有可执行的刀具移动。' }];
   }
 
-  const issues = [];
-  const seen = new Set();
-  const points = buildValidationPath(cmds);
+  const issues = [...commandIssues];
+  const seen = new Set(commandIssues.map(issue => `${issue.line}-${issue.message}`));
+  const points = buildValidationPath(cmds, tool.safeZ);
   const events = cmds.events || [];
+  const pointTool = point => mode === 'advanced' && point.toolId && toolMagazine[point.toolId]
+    ? toolMagazine[point.toolId]
+    : tool;
 
   events.forEach(event => {
     if (event.speedCommand !== null && event.speedCommand > MAX_SPINDLE_SPEED) {
@@ -374,17 +541,39 @@ function validateGeneratedGCode(gcode, stockInput) {
         `主轴转速 S${event.speedCommand} 超过上限 S${MAX_SPINDLE_SPEED}。`
       );
     }
+    if (mode === 'advanced' && event.toolChangeRequest && event.spindleBeforeLine && !event.hasSpindleStop) {
+      addValidationIssue(
+        issues,
+        seen,
+        'warn',
+        event.line,
+        'toolchange-spindle',
+        '换刀前主轴仍在转动；请先执行 M05，再执行 Txx M06。'
+      );
+    }
   });
 
   points.forEach((point, index) => {
     if (index === 0) return;
     const prev = points[index - 1];
-    const inStockArea = isInsideValidationStock(point, stock, TOOL_RADIUS);
+    const activePointTool = pointTool(point);
+    const intersectsStock = isInsideValidationStock(point, stock, activePointTool.radius);
+    const toolWithinStock = isInsideValidationStock(point, stock, -activePointTool.radius);
     const xyMove = Math.hypot(point.x - prev.x, point.y - prev.y) > 0.01;
     const rapidDown = point.z < prev.z - 0.01;
     const insideMaterial = point.z < -0.05;
 
-    if (point.rapid && insideMaterial && inStockArea && rapidDown) {
+    if (point.toolChange && point.z < activePointTool.safeZ - .05) {
+      addValidationIssue(
+        issues,
+        seen,
+        'warn',
+        point.line,
+        'toolchange-z',
+        `换刀时 Z${point.z.toFixed(2)} 低于 T${String(point.toolId).padStart(2, '0')} 的安全高度 Z${formatMm(activePointTool.safeZ)}。`
+      );
+    }
+    if (point.rapid && insideMaterial && intersectsStock && rapidDown) {
       addValidationIssue(
         issues,
         seen,
@@ -394,7 +583,7 @@ function validateGeneratedGCode(gcode, stockInput) {
         `G00 快速下刀进入材料，当前 Z${point.z.toFixed(2)}。`
       );
     }
-    if (point.rapid && insideMaterial && inStockArea && xyMove) {
+    if (point.rapid && insideMaterial && intersectsStock && xyMove) {
       addValidationIssue(
         issues,
         seen,
@@ -413,23 +602,23 @@ function validateGeneratedGCode(gcode, stockInput) {
         'bottom',
         `Z${point.z.toFixed(2)} 低于工件底面 -${formatMm(stock.height)}mm，可能穿透工件或撞台。`
       );
-    } else if (!point.rapid && point.z < -CUT_DEPTH_CRASH) {
+    } else if (!point.rapid && Math.abs(Math.min(0, point.z)) > activePointTool.overhang) {
       addValidationIssue(
         issues,
         seen,
         'crash',
         point.line,
-        'deep-crash',
-        `切削深度 ${Math.abs(point.z).toFixed(2)}mm 超过 ${formatMm(CUT_DEPTH_CRASH)}mm。`
+        'holder-crash',
+        `${activePointTool.label}切削深度 ${Math.abs(point.z).toFixed(2)}mm 超过伸出量 ${formatMm(activePointTool.overhang)}mm，刀柄会接触工件。`
       );
-    } else if (!point.rapid && point.z < -CUT_DEPTH_WARN) {
+    } else if (!point.rapid && Math.abs(Math.min(0, point.z)) > activePointTool.cuttingLength) {
       addValidationIssue(
         issues,
         seen,
-        'warn',
+        'crash',
         point.line,
-        'deep-warn',
-        `切削深度 ${Math.abs(point.z).toFixed(2)}mm 超过 ${formatMm(CUT_DEPTH_WARN)}mm。`
+        'flute-crash',
+        `${activePointTool.label}切削深度 ${Math.abs(point.z).toFixed(2)}mm 超过刃长 ${formatMm(activePointTool.cuttingLength)}mm。`
       );
     }
     if (!point.rapid && point.z < 0 && !point.spindleOn) {
@@ -442,7 +631,7 @@ function validateGeneratedGCode(gcode, stockInput) {
         '主轴未启动就开始切削。'
       );
     }
-    if (!point.rapid && point.z <= 0 && !inStockArea) {
+    if (!point.rapid && point.z <= 0 && !toolWithinStock) {
       addValidationIssue(
         issues,
         seen,
@@ -452,15 +641,36 @@ function validateGeneratedGCode(gcode, stockInput) {
         '切削点超出当前工件范围。'
       );
     }
+    if (point.rapid && xyMove && point.z < activePointTool.safeZ - 0.05) {
+      addValidationIssue(
+        issues,
+        seen,
+        'warn',
+        point.line,
+        'safe-z',
+        `G00 横向快速移动时 Z${point.z.toFixed(2)} 低于当前${activePointTool.label}安全高度 Z${formatMm(activePointTool.safeZ)}。`
+      );
+    }
+    if (activePointTool.type === 'drill' && !point.rapid && insideMaterial && xyMove) {
+      addValidationIssue(
+        issues,
+        seen,
+        'crash',
+        point.line,
+        'drill-xy',
+        '钻头在材料内横向切削；钻头只能在固定 XY 位置沿 Z 轴下钻，槽和轮廓必须使用立铣刀。'
+      );
+    }
   });
 
   const lastPoint = points[points.length - 1];
   if (lastPoint && lastPoint.z < -0.05) {
+    const lastTool = pointTool(lastPoint);
     issues.push({
       type: 'warn',
       level: 'warn',
       line: lastPoint.line,
-      message: `程序结束时刀具仍在材料内，当前 Z${lastPoint.z.toFixed(2)}，建议结束前抬刀到 Z${formatMm(SAFE_Z)}。`
+      message: `程序结束时刀具仍在材料内，当前 Z${lastPoint.z.toFixed(2)}，建议结束前抬刀到 Z${formatMm(lastTool.safeZ)}。`
     });
   }
 
@@ -473,7 +683,11 @@ function formatValidationIssue(issue) {
   return `${line} ${label}：${issue.message}`;
 }
 
-function buildRepairMessages(messages, reply, issues) {
+function buildRepairMessages(messages, reply, issues, payload = {}) {
+  const { mode, tool, toolMagazine } = normalizeProgrammingContext(payload);
+  const modeRequirement = mode === 'advanced'
+    ? `保持高级模式规则：只能使用 ${[1, 2, 3].map(id => `T0${id}=${toolMagazine[id].label} Ø${formatMm(toolMagazine[id].diameter)}`).join('、')}，换刀前抬刀并 M05，使用 Txx M06，换刀后重新 M03。`
+    : `保持初级模式规则：只能使用当前${tool.label} Ø${formatMm(tool.diameter)}，严禁任何 T 指令或 M06。`;
   return [
     ...messages,
     { role: 'assistant', content: reply || '（没有输出可用 G 代码）' },
@@ -481,7 +695,8 @@ function buildRepairMessages(messages, reply, issues) {
       role: 'user',
       content: [
         '上面的 G 代码没有通过当前仿真报警校验，请按原需求修正。',
-        '修正要求：X0/Y0 必须是工件上表面中心，Z0 必须是工件上表面；S 不超过 800；G00 不得进入材料；切削前必须启动主轴；默认切深不超过 2mm；结束前必须 G00 Z15、M05、M30。',
+        modeRequirement,
+        `通用修正要求：X0/Y0 必须是工件上表面中心，Z0 必须是工件上表面；S 不超过 ${MAX_SPINDLE_SPEED}；G00 不得进入材料；切削前必须启动主轴；只能使用仿真器支持的 G00/G01/G02/G03/G17/G21/G90；结束前必须抬到当前刀具安全高度、M05、M30。`,
         '校验问题：',
         issues.map(formatValidationIssue).join('\n'),
         '请输出一段新的 ```gcode``` 代码块。'
@@ -535,16 +750,16 @@ async function handleProgrammingAgent(request, response) {
     const messages = buildAgentMessages(payload);
     let reply = await requestChatCompletion(config, messages);
     let gcode = extractGCode(reply);
-    let validationIssues = validateGeneratedGCode(gcode, payload.stock);
+    let validationIssues = validateGeneratedGCode(gcode, payload);
     let repaired = false;
     let repairError = '';
 
     if (validationIssues.length) {
       try {
-        const repairMessages = buildRepairMessages(messages, reply, validationIssues);
+        const repairMessages = buildRepairMessages(messages, reply, validationIssues, payload);
         const repairedReply = await requestChatCompletion(config, repairMessages);
         const repairedGcode = extractGCode(repairedReply);
-        const repairedIssues = validateGeneratedGCode(repairedGcode, payload.stock);
+        const repairedIssues = validateGeneratedGCode(repairedGcode, payload);
         reply = repairedReply;
         gcode = repairedGcode;
         validationIssues = repairedIssues;
@@ -571,6 +786,19 @@ async function handleProgrammingAgent(request, response) {
 
 const server = createServer(async (request, response) => {
   const url = new URL(request.url || '/', 'http://localhost');
+  if (process.env.NODE_ENV === 'test' && url.pathname === '/api/test-validation') {
+    if (request.method !== 'POST') {
+      sendJson(response, 405, { error: '只支持 POST 请求。' });
+      return;
+    }
+    try {
+      const payload = await readJsonBody(request);
+      sendJson(response, 200, { issues: validateGeneratedGCode(String(payload.gcode || ''), payload) });
+    } catch (error) {
+      sendJson(response, 400, { error: error.message || '测试请求失败。' });
+    }
+    return;
+  }
   if (url.pathname === '/api/programming-agent') {
     await handleProgrammingAgent(request, response);
     return;

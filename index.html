@@ -165,6 +165,233 @@
 
     .stock-form[data-shape="round"] .box-only { display: none; }
     .stock-form[data-shape="box"] .round-only { display: none; }
+    .stock-form[data-shape="box"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .tool-setup {
+      margin: 9px 0;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #12171b;
+    }
+
+    .tool-current,
+    .advanced-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tool-setup > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .tool-setup > summary::-webkit-details-marker { display: none; }
+
+    .tool-setup > summary::before {
+      content: '▶';
+      color: var(--cyan);
+      font-size: 9px;
+      transition: transform .16s ease;
+    }
+
+    .tool-setup[open] > summary::before { transform: rotate(90deg); }
+
+    .tool-setup > summary strong {
+      margin-right: auto;
+      color: var(--text);
+    }
+
+    .tool-settings-body {
+      margin-top: 9px;
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+    }
+
+    .tool-presets {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .tool-preset {
+      display: grid;
+      gap: 3px;
+      padding: 8px 5px;
+      color: var(--text);
+      background: var(--panel-soft);
+      border: 1px solid var(--line);
+    }
+
+    .tool-preset small {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .tool-preset.active {
+      color: #06110f;
+      background: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    .tool-preset.active small { color: #17443f; }
+
+    .tool-current {
+      margin-top: 8px;
+      padding: 7px 8px;
+      border-radius: 6px;
+      color: var(--muted);
+      background: #0d1012;
+      font-size: 11px;
+    }
+
+    .tool-current strong { color: var(--cyan); }
+
+    .compensation-card {
+      margin-top: 8px;
+      padding: 8px;
+      border: 1px solid rgba(61, 214, 208, .26);
+      border-radius: 7px;
+      background: rgba(61, 214, 208, .06);
+    }
+
+    .compensation-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+      font-size: 11px;
+    }
+
+    .compensation-head strong { color: var(--cyan); }
+
+    .beginner-badge {
+      padding: 3px 6px;
+      border-radius: 99px;
+      color: #06110f;
+      background: var(--cyan);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .compensation-values {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .compensation-value {
+      display: grid;
+      gap: 3px;
+      padding: 6px 7px;
+      border-radius: 6px;
+      background: #0d1012;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .compensation-value strong {
+      color: var(--text);
+      font: 700 13px Consolas, "Courier New", monospace;
+    }
+
+    .compensation-note {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
+
+    .magazine-card {
+      margin-top: 8px;
+      padding: 8px;
+      border: 1px solid rgba(61, 214, 208, .26);
+      border-radius: 7px;
+      background: rgba(61, 214, 208, .06);
+    }
+
+    .magazine-slots { display: grid; gap: 6px; }
+
+    .magazine-slot {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr) 92px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .magazine-slot .slot-id {
+      font: 700 11px Consolas, "Courier New", monospace;
+      color: var(--cyan);
+    }
+
+    .magazine-slot select {
+      width: 100%;
+      padding: 5px 6px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0d1012;
+      color: var(--text);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .slot-dia {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 7px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0d1012;
+      color: var(--muted);
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .slot-dia input {
+      width: 54px;
+      padding: 5px 0;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      font: 700 12px Consolas, "Courier New", monospace;
+      text-align: right;
+    }
+
+    .slot-dia input:focus { outline: none; }
+
+    .advanced-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .advanced-grid .stock-field:last-of-type input {
+      color: var(--amber);
+      cursor: not-allowed;
+    }
+
+    .tool-apply { grid-column: 1 / -1; }
+
+    .tool-help {
+      grid-column: 1 / -1;
+      margin: 0;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.45;
+    }
 
     .button-row {
       display: grid;
@@ -355,6 +582,64 @@
       border: 1px solid var(--line);
     }
 
+    .help-dialog {
+      width: min(720px, 96vw);
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .help-content {
+      overflow: auto;
+      padding: 16px;
+      color: var(--muted);
+      background: #0d1012;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .help-intro {
+      margin: 0 0 14px;
+      color: var(--text);
+    }
+
+    .help-steps {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .help-steps li { margin-bottom: 8px; }
+    .help-steps strong { color: var(--cyan); }
+
+    .help-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .help-card {
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-soft);
+    }
+
+    .help-card h3 {
+      margin: 0 0 6px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .help-card p { margin: 0; }
+
+    .help-safety {
+      margin: 14px 0 0;
+      padding: 10px 11px;
+      border-left: 4px solid var(--amber);
+      border-radius: 6px;
+      color: #ffe0a1;
+      background: rgba(240, 177, 59, .09);
+    }
+
     .agent-message.error {
       align-self: flex-start;
       background: rgba(240, 90, 90, .13);
@@ -422,6 +707,53 @@
       border: 1px solid rgba(255,255,255,.12);
       color: var(--muted);
       font-size: 12px;
+    }
+
+    .door-control {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      z-index: 3;
+      display: grid;
+      justify-items: end;
+      gap: 7px;
+      padding: 8px;
+      border-radius: 8px;
+      background: rgba(17, 21, 25, .92);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 10px 30px rgba(0,0,0,.28);
+    }
+
+    .door-state {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .door-state::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 9px currentColor;
+    }
+
+    .door-control.open .door-state { color: var(--amber); }
+
+    .door-toggle {
+      min-width: 126px;
+      padding: 8px 10px;
+      color: #07120e;
+      background: var(--green);
+    }
+
+    .door-control.open .door-toggle {
+      color: #161006;
+      background: var(--amber);
     }
 
     .top-view {
@@ -496,6 +828,9 @@
         width: 165px;
         height: 165px;
       }
+
+      .door-control { top: 86px; }
+      .help-cards { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -516,10 +851,14 @@
           <button class="mode-btn active" id="roundStock">棒材</button>
           <button class="mode-btn" id="boxStock">长方形</button>
         </div>
+        <div class="mode-row">
+          <button class="mode-btn active" id="beginnerMode">初级模式（单刀）</button>
+          <button class="mode-btn" id="advancedMode">高级模式（可换刀）</button>
+        </div>
         <div class="stock-form" id="stockForm" data-shape="round">
           <label class="stock-field round-only">
             <span>直径 D mm</span>
-            <input id="stockDiameter" type="number" min="5" max="300" step="1" value="32">
+            <input id="stockDiameter" type="number" min="5" max="300" step="1" value="50">
           </label>
           <label class="stock-field box-only">
             <span>长度 X mm</span>
@@ -535,12 +874,102 @@
           </label>
           <button class="stock-generate" id="generateStock">生成棒材</button>
         </div>
+        <details class="tool-setup">
+          <summary>
+            <strong>高级设置</strong>
+            <span id="toolSetupSummary">当前刀具 Ø5 · S800</span>
+          </summary>
+          <div class="tool-settings-body">
+            <div class="tool-presets" role="group" aria-label="平底立铣刀预设">
+              <button class="tool-preset" data-tool="3" type="button" aria-pressed="false"><span>Ø3 mm</span><small>精细加工</small></button>
+              <button class="tool-preset active" data-tool="5" type="button" aria-pressed="true"><span>Ø5 mm</span><small>通用教学</small></button>
+              <button class="tool-preset" data-tool="8" type="button" aria-pressed="false"><span>Ø8 mm</span><small>大轮廓</small></button>
+            </div>
+            <div class="magazine-card" id="magazineCard" style="display: none;">
+              <div class="compensation-head">
+                <strong>刀库设置（T01–T03）</strong>
+                <span class="beginner-badge">高级模式</span>
+              </div>
+              <div class="magazine-slots">
+                <div class="magazine-slot">
+                  <span class="slot-id">T01</span>
+                  <select id="magType1" aria-label="T01 刀具类型">
+                    <option value="endmill">立铣刀</option>
+                    <option value="drill">钻头</option>
+                    <option value="facemill" selected>平面铣刀</option>
+                  </select>
+                  <label class="slot-dia">Ø<input id="magDia1" type="number" min="1" max="50" step="0.5" value="25"></label>
+                </div>
+                <div class="magazine-slot">
+                  <span class="slot-id">T02</span>
+                  <select id="magType2" aria-label="T02 刀具类型">
+                    <option value="endmill" selected>立铣刀</option>
+                    <option value="drill">钻头</option>
+                    <option value="facemill">平面铣刀</option>
+                  </select>
+                  <label class="slot-dia">Ø<input id="magDia2" type="number" min="1" max="50" step="0.5" value="5"></label>
+                </div>
+                <div class="magazine-slot">
+                  <span class="slot-id">T03</span>
+                  <select id="magType3" aria-label="T03 刀具类型">
+                    <option value="endmill">立铣刀</option>
+                    <option value="drill" selected>钻头</option>
+                    <option value="facemill">平面铣刀</option>
+                  </select>
+                  <label class="slot-dia">Ø<input id="magDia3" type="number" min="1" max="50" step="0.5" value="4"></label>
+                </div>
+              </div>
+              <p class="compensation-note">实例默认：T01 平面铣刀铣完整个端面，T02 立铣刀加工十字槽，T03 钻头加工周围 4 孔。换刀时 3D 刀具同步变化。</p>
+            </div>
+            <div class="tool-current">
+              <span>当前参数</span>
+              <strong id="toolSummary">Ø5 · 刃长12 · 伸出20 · 安全Z15</strong>
+            </div>
+            <div class="compensation-card">
+              <div class="compensation-head">
+                <strong>自动刀具补偿</strong>
+                <span class="beginner-badge">初学模式</span>
+              </div>
+              <div class="compensation-values">
+                <div class="compensation-value">
+                  <span>D01 半径补偿</span>
+                  <strong id="radiusCompensation">2.500 mm</strong>
+                </div>
+                <div class="compensation-value">
+                  <span>H01 长度补偿</span>
+                  <strong id="lengthCompensation">20.000 mm</strong>
+                </div>
+              </div>
+              <p class="compensation-note">选择刀具后自动更新。本阶段按刀尖和刀具中心编程，不需要手写 G41/G42/G43。</p>
+            </div>
+            <div class="advanced-grid">
+              <label class="stock-field">
+                <span>刃长 mm</span>
+                <input id="toolCuttingLength" type="number" min="2" max="50" step="1" value="12">
+              </label>
+              <label class="stock-field">
+                <span>伸出量 mm</span>
+                <input id="toolOverhang" type="number" min="5" max="80" step="1" value="20">
+              </label>
+              <label class="stock-field">
+                <span>安全高度 Z mm</span>
+                <input id="toolSafeZ" type="number" min="1" max="50" step="1" value="15">
+              </label>
+              <label class="stock-field">
+                <span>最高转速 r/min</span>
+                <input type="number" value="800" disabled aria-label="最高转速固定为800转每分钟">
+              </label>
+              <p class="tool-help">刃长决定能安全切多深；伸出量决定刀柄离工件有多远；安全高度用于快速移动避让。</p>
+              <button class="tool-apply" id="applyToolSettings" type="button">应用高级参数</button>
+            </div>
+          </div>
+        </details>
         <textarea id="gcode" spellcheck="false" placeholder="请输入 G 代码，或点击加载实例..."></textarea>
         <div class="button-row">
           <button id="loadDemo">加载3D实例</button>
           <button class="secondary" id="run">开始仿真</button>
           <button class="danger" id="reset">重置</button>
-          <button id="analyze">只检测撞刀</button>
+          <button id="openHelp">使用说明</button>
           <button class="agent-button" id="openAgent">编程智能体</button>
         </div>
       </div>
@@ -585,6 +1014,10 @@
         </div>
         <div class="hud-pill">视角已锁定，滚轮缩放。<span class="mobile-note">手机可双指缩放。</span></div>
       </div>
+      <div class="door-control" id="doorControl">
+        <div class="door-state" id="doorState">安全门已关闭</div>
+        <button class="door-toggle" id="toggleDoor" type="button">打开安全门</button>
+      </div>
       <div class="top-view">
         <canvas id="topView"></canvas>
         <div class="top-view-label">XY 轨迹</div>
@@ -600,7 +1033,7 @@
       </div>
       <div class="agent-chat" id="agentChat"></div>
       <div class="agent-compose">
-        <textarea id="agentInput" placeholder="例如：生成一个十字槽程序，深度 1.5mm，进给 F180，安全高度 Z15。"></textarea>
+        <textarea id="agentInput" placeholder="请描述形状、尺寸、深度和工序；智能体会使用当前模式、材料和刀具参数。"></textarea>
         <div class="agent-actions">
           <button id="insertAgentCode" disabled>放入编辑器</button>
           <button id="sendAgent">发送生成</button>
@@ -609,40 +1042,262 @@
     </div>
   </div>
 
+  <div class="agent-modal" id="helpModal" aria-hidden="true">
+    <div class="agent-dialog help-dialog" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="agent-header">
+        <strong id="helpTitle">使用说明（本科教学版）</strong>
+        <button class="agent-close" id="closeHelp" type="button" title="关闭使用说明">×</button>
+      </div>
+      <div class="help-content">
+        <p class="help-intro">建议按下面顺序操作。系统会在加载程序和开始仿真前自动检测撞刀，不需要单独点击检测按钮。</p>
+        <ol class="help-steps">
+          <li><strong>选择模式：</strong>初级模式只使用当前一把刀；高级模式可使用 T01–T03 并执行 M06 换刀。</li>
+          <li><strong>设置材料：</strong>选择棒材或长方形，填写尺寸后点击“生成材料”。Z0 表示材料上表面。</li>
+          <li><strong>确认刀具：</strong>初级模式在高级设置中选直径；高级模式还要确认刀库中的刀型和直径。</li>
+          <li><strong>准备程序：</strong>可加载实例、手动输入 G 代码，或让编程智能体根据当前模式和参数生成。</li>
+          <li><strong>开始仿真：</strong>先查看报警/检测区域，确认没有红色风险，再点击“开始仿真”。</li>
+        </ol>
+        <div class="help-cards">
+          <section class="help-card">
+            <h3>三种刀具怎么用</h3>
+            <p>平面铣刀用于铣平端面；立铣刀用于槽和轮廓；钻头只做固定 XY 位置的竖直钻孔。</p>
+          </section>
+          <section class="help-card">
+            <h3>坐标与安全高度</h3>
+            <p>X0/Y0 是材料中心，Z0 是上表面，Z 负值进入材料。横向 G00 前应先抬到设置的安全高度。</p>
+          </section>
+          <section class="help-card">
+            <h3>初级模式</h3>
+            <p>适合先学习 G00、G01、坐标和进给。程序中不能出现 T 刀号和 M06 换刀。</p>
+          </section>
+          <section class="help-card">
+            <h3>高级模式</h3>
+            <p>按工序选择 T01–T03。换刀前先抬刀并 M05，换刀后重新执行 M03，主轴转速不得超过 S800。</p>
+          </section>
+        </div>
+        <p class="help-safety">教学提示：红色表示明显撞刀风险，黄色表示需要检查。即使没有报警，也要确认刀具、装夹、尺寸和程序符合实际设备要求。</p>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import * as THREE from './libs/three.module.js';
     import { OrbitControls } from './libs/OrbitControls.js';
 
-    const TOOL_RADIUS = 2.5;
-    const CUT_DEPTH_WARN = 2.0;
-    const CUT_DEPTH_CRASH = 4.0;
     const MAX_SPINDLE_SPEED = 800;
-    const INITIAL_Z = 15;
-    const TOOL_BODY_HEIGHT = 15;
     const STEP_MM = 0.6;
     const SPEED = 0.22;
     const LARGE_STOCK_SPEED_MULTIPLIER = 9;
+    const RAPID_SPEED_MULTIPLIER = 4;   // G00 快速移动按真实机床倍速播放，避免频繁抬刀拖慢节奏
+    const CARVE_COLORS = {
+      base: new THREE.Color(0xaeb8bd),   // 未加工坯料
+      machined: new THREE.Color(0xc8d1d5), // 平面铣后的银灰加工面
+      machinedDeep: new THREE.Color(0x89969c),
+      fresh: new THREE.Color(0x1593ff),  // 新切削面（亮蓝，与路径线同色系）
+      deep: new THREE.Color(0x0b63a9)    // 深切面（向深蓝过渡）
+    };
+
+    const MACHINE_ENCLOSURE = Object.freeze({
+      width: 640,
+      depth: 560,
+      openingWidth: 470,
+      openingHeight: 240,
+      openingBottomZ: -70,
+      frontY: -235,
+      apronWidth: 560,
+      apronDepth: 390,
+      apronCenterY: 28,
+      cameraPosition: [0, -720, 55],
+      cameraTarget: [0, 0, 25]
+    });
+
+    const TOOL_PRESETS = {
+      3: { diameter: 3, cuttingLength: 8, overhang: 15, safeZ: 15, use: '精细加工' },
+      5: { diameter: 5, cuttingLength: 12, overhang: 20, safeZ: 15, use: '通用教学' },
+      8: { diameter: 8, cuttingLength: 20, overhang: 30, safeZ: 15, use: '大轮廓' }
+    };
+
+    // 刀具类型：立铣刀（通用铣削）/ 钻头（轴向钻孔）/ 平面铣刀（大平面铣削）
+    const TOOL_TYPES = {
+      endmill: { label: '立铣刀' },
+      drill: { label: '钻头' },
+      facemill: { label: '平面铣刀' }
+    };
+    const toolTypeLabel = tool => (TOOL_TYPES[tool.type] || TOOL_TYPES.endmill).label;
+
+    // 刀库（可自定义）：高级模式 G 代码 T01/T02/T03 + M06 引用，刀位类型与直径由面板配置
+    let toolMagazine = {
+      1: { type: 'facemill', diameter: 25 },
+      2: { type: 'endmill', diameter: 5 },
+      3: { type: 'drill', diameter: 4 }
+    };
 
     const DEFAULT_STOCK = {
-      round: { diameter: 32, height: 8 },
+      round: { diameter: 50, height: 8 },
       box: { width: 200, depth: 200, height: 8 }
     };
 
-    const crossDemoCode = `O3001 (小材料十字槽实例)
-G21 G17 G90
-G00 X0 Y0 Z15
-M03 S800
-G00 X-12 Y0 Z15
-G01 Z-2 F100
-G01 X12 Y0 F240
-G00 Z15
-G00 X0 Y-12
-G01 Z-2 F100
-G01 X0 Y12 F240
-G00 Z15
-G00 X0 Y0
-M05
-M30`;
+    // 初学示例：直接铣出清晰的“工”字槽。
+    // 三段刀路分别对应上横、中央竖线和下横，并按材料与刀具尺寸自动缩放。
+    function createGongDemoCode() {
+      const stock = getStock();
+      const safeZ = formatStockNumber(activeTool.safeZ);
+      const toolR = activeTool.radius;
+      const depth = Math.min(2, Math.max(.5, stock.height * .3));
+      const zDepth = (-depth).toFixed(2);
+      const f3 = value => value.toFixed(3);
+
+      const clearance = .5;
+      const usableX = stock.type === 'round'
+        ? Math.max(.5, stock.radius - toolR - clearance)
+        : Math.max(.5, stock.width / 2 - toolR - clearance);
+      const usableY = stock.type === 'round'
+        ? Math.max(.5, stock.radius - toolR - clearance)
+        : Math.max(.5, stock.depth / 2 - toolR - clearance);
+
+      // 对圆料使用 0.72 : 0.50 的比例，横杠端点仍完整位于安全圆内。
+      const halfWidth = usableX * .72;
+      const halfHeight = stock.type === 'round' ? usableY * .50 : usableY * .56;
+
+      const lines = [
+        'O3001 (工字槽铣削实例)',
+        'G21 G17 G90',
+        `G00 X${f3(-halfWidth)} Y${f3(halfHeight)} Z${safeZ}`,
+        'M03 S800',
+
+        // 上横
+        `G01 Z${zDepth} F100`,
+        `G01 X${f3(halfWidth)} Y${f3(halfHeight)} F240`,
+        `G00 Z${safeZ}`,
+
+        // 中央竖线
+        `G00 X0 Y${f3(halfHeight)}`,
+        `G01 Z${zDepth} F100`,
+        `G01 X0 Y${f3(-halfHeight)} F240`,
+        `G00 Z${safeZ}`,
+
+        // 下横
+        `G00 X${f3(-halfWidth)} Y${f3(-halfHeight)}`,
+        `G01 Z${zDepth} F100`,
+        `G01 X${f3(halfWidth)} Y${f3(-halfHeight)} F240`,
+        `G00 Z${safeZ}`,
+        'G00 X0 Y0',
+        'M05',
+        'M30'
+      ];
+      return lines.join('\n');
+    }
+
+    // 高级棒材教学实例使用同一组尺寸：初始“工”字凸纹、十字槽与四个孔始终成比例居中。
+    function getAdvancedRoundPattern(stock = getStock()) {
+      const radius = Math.max(2.5, stock.radius || Math.min(stock.width, stock.depth) / 2);
+      return {
+        halfWidth: radius * .42,
+        halfHeight: radius * .30,
+        stroke: Math.max(.45, Math.min(2.2, radius * .08)),
+        height: Math.max(.18, Math.min(.6, stock.height * .06))
+      };
+    }
+
+    // 高级棒材实例：T01 往复铣完整个端面，T02 立铣刀加工十字槽，T03 钻四孔。
+    function createAdvancedRoundDemoCode() {
+      const stock = getStock();
+      const pattern = getAdvancedRoundPattern(stock);
+      const safeZ = 15;
+      const f3 = value => Number(value).toFixed(3);
+
+      const faceRadius = toolMagazine[1].diameter / 2;
+      const faceCenterLimit = Math.max(0, stock.radius - faceRadius - .02);
+      const faceStepOver = Math.max(faceRadius * .72, stock.radius / 28, .5);
+      const facePassYs = [];
+      if (faceCenterLimit < .01) {
+        facePassYs.push(0);
+      } else {
+        for (let y = -faceCenterLimit; y < faceCenterLimit - .001; y += faceStepOver) {
+          facePassYs.push(y);
+        }
+        if (Math.abs(facePassYs[facePassYs.length - 1] - faceCenterLimit) > .001) {
+          facePassYs.push(faceCenterLimit);
+        }
+      }
+      const faceDepth = -Math.max(.02, Math.min(.12, stock.height * .02));
+
+      const endmillRadius = toolMagazine[2].diameter / 2;
+      const crossLimit = Math.max(.5, stock.radius - endmillRadius - .5);
+      const crossHalf = Math.max(.5, Math.min(pattern.halfWidth * .82, crossLimit * .72));
+      const crossDepth = -Math.min(2, Math.max(.4, stock.height * .25));
+
+      const drillRadius = toolMagazine[3].diameter / 2;
+      const diagonalLimit = Math.max(.5, (stock.radius - drillRadius - .6) / Math.SQRT2);
+      const holeOffset = Math.max(.5, Math.min(stock.radius * .46, pattern.halfWidth * 1.12, diagonalLimit));
+      const drillDepth = -Math.min(4, Math.max(1, stock.height * .5));
+
+      const lines = [
+        'O3101 (高级棒材三刀加工实例)',
+        'G21 G17 G90',
+        `G00 X0 Y0 Z${f3(safeZ)}`,
+        '',
+        '(T01 平面铣刀：往复铣完整个圆形端面)',
+        'T01 M06',
+        'M03 S600'
+      ];
+
+      facePassYs.forEach((y, index) => {
+        const halfX = Math.sqrt(Math.max(0, faceCenterLimit ** 2 - y ** 2));
+        const startX = index % 2 === 0 ? -halfX : halfX;
+        const endX = -startX;
+        lines.push(`(平面第 ${index + 1} 刀)`);
+        lines.push(`G00 X${f3(startX)} Y${f3(y)} Z${f3(safeZ)}`);
+        lines.push(`G01 Z${f3(faceDepth)} F80`);
+        lines.push(`G01 X${f3(endX)} Y${f3(y)} F180`);
+        lines.push(`G00 Z${f3(safeZ)}`);
+      });
+
+      // 最后一圈让刀盘外缘贴近棒材外圆，补齐往复刀路在圆周处留下的小月牙区域。
+      if (faceCenterLimit > .01) {
+        lines.push('(端面外圈精铣)');
+        lines.push(`G00 X${f3(faceCenterLimit)} Y0 Z${f3(safeZ)}`);
+        lines.push(`G01 Z${f3(faceDepth)} F80`);
+        lines.push(`G02 X${f3(faceCenterLimit)} Y0 I${f3(-faceCenterLimit)} J0 F160`);
+        lines.push(`G00 Z${f3(safeZ)}`);
+      }
+
+      lines.push('M05');
+      lines.push('');
+      lines.push('(T02 立铣刀：加工十字槽)');
+      lines.push('T02 M06');
+      lines.push('M03 S800');
+      lines.push(`G00 X${f3(-crossHalf)} Y0 Z${f3(safeZ)}`);
+      lines.push(`G01 Z${f3(crossDepth)} F80`);
+      lines.push(`G01 X${f3(crossHalf)} Y0 F180`);
+      lines.push(`G00 Z${f3(safeZ)}`);
+      lines.push(`G00 X0 Y${f3(-crossHalf)}`);
+      lines.push(`G01 Z${f3(crossDepth)} F80`);
+      lines.push(`G01 X0 Y${f3(crossHalf)} F180`);
+      lines.push(`G00 Z${f3(safeZ)}`);
+      lines.push('M05');
+      lines.push('');
+      lines.push('(T03 钻头：在十字周围钻 4 个孔)');
+      lines.push('T03 M06');
+      lines.push('M03 S700');
+
+      [
+        [-holeOffset, -holeOffset],
+        [holeOffset, -holeOffset],
+        [holeOffset, holeOffset],
+        [-holeOffset, holeOffset]
+      ].forEach(([x, y], index) => {
+        lines.push(`(孔 ${index + 1})`);
+        lines.push(`G00 X${f3(x)} Y${f3(y)} Z${f3(safeZ)}`);
+        lines.push(`G01 Z${f3(drillDepth)} F70`);
+        lines.push(`G00 Z${f3(safeZ)}`);
+      });
+
+      lines.push('M05');
+      lines.push('G00 X0 Y0');
+      lines.push('M30');
+      return lines.join('\n');
+    }
 
     const elements = {
       canvas: document.getElementById('scene'),
@@ -658,6 +1313,24 @@ M30`;
       stockDepthInput: document.getElementById('stockDepthInput'),
       stockHeightInput: document.getElementById('stockHeightInput'),
       generateStock: document.getElementById('generateStock'),
+      toolPresets: [...document.querySelectorAll('.tool-preset')],
+      toolSetupSummary: document.getElementById('toolSetupSummary'),
+      toolSummary: document.getElementById('toolSummary'),
+      radiusCompensation: document.getElementById('radiusCompensation'),
+      lengthCompensation: document.getElementById('lengthCompensation'),
+      beginnerMode: document.getElementById('beginnerMode'),
+      advancedMode: document.getElementById('advancedMode'),
+      magazineCard: document.getElementById('magazineCard'),
+      magType1: document.getElementById('magType1'),
+      magType2: document.getElementById('magType2'),
+      magType3: document.getElementById('magType3'),
+      magDia1: document.getElementById('magDia1'),
+      magDia2: document.getElementById('magDia2'),
+      magDia3: document.getElementById('magDia3'),
+      toolCuttingLength: document.getElementById('toolCuttingLength'),
+      toolOverhang: document.getElementById('toolOverhang'),
+      toolSafeZ: document.getElementById('toolSafeZ'),
+      applyToolSettings: document.getElementById('applyToolSettings'),
       status: document.getElementById('machineStatus'),
       lamp: document.getElementById('lamp'),
       pos: document.getElementById('pos'),
@@ -672,31 +1345,57 @@ M30`;
       boundsLabel: document.getElementById('boundsLabel'),
       alarmCount: document.getElementById('alarmCount'),
       log: document.getElementById('log'),
+      openHelp: document.getElementById('openHelp'),
+      helpModal: document.getElementById('helpModal'),
+      closeHelp: document.getElementById('closeHelp'),
       openAgent: document.getElementById('openAgent'),
       closeAgent: document.getElementById('closeAgent'),
       agentModal: document.getElementById('agentModal'),
       agentChat: document.getElementById('agentChat'),
       agentInput: document.getElementById('agentInput'),
       sendAgent: document.getElementById('sendAgent'),
-      insertAgentCode: document.getElementById('insertAgentCode')
+      insertAgentCode: document.getElementById('insertAgentCode'),
+      doorControl: document.getElementById('doorControl'),
+      doorState: document.getElementById('doorState'),
+      toggleDoor: document.getElementById('toggleDoor')
     };
 
     let renderer, scene, camera, controls;
-    let toolGroup, pathGroup, surfaceCutGroup, crashGroup, boundsHelper;
-    let bedMesh, stockMesh;
+    let toolGroup, pathGroup, crashGroup, boundsHelper;
+    let bedMesh, carveGroup, doorGroup, leftDoorPanel, rightDoorPanel;
+    let doorHitMeshes = [];
+    let doorTargetOpen = false;
+    let doorOpenProgress = 0;
+    let doorPointerStart = null;        // 区分"点击门"与"拖拽视角"的按下起点
+    let enclosureFadeMaterials = [];    // 外壳淡出用的材质及其基准透明度
+    let enclosurePedestal = null;       // 外壳内立柱（顶住工作台，高度随毛坯调整）
+    let activeTool = createToolConfig(TOOL_PRESETS[5]);
+    let advancedToolMode = false;    // 高级模式：支持 G 代码 T/M06 换刀
     let activeStockShape = 'round';
     let activeStock = createStockConfig('round', DEFAULT_STOCK.round);
     let commands = [];
     let pathPoints = [];
     let alarms = [];
     let totalLength = 0;
+    // 顶视图增量绘制状态（背景层/轨迹层离屏画布 + 已画索引 + 布局标识）
+    let topViewBgCanvas = null;
+    let topViewTraceCanvas = null;
+    let topViewDrawnIndex = 0;
+    let topViewLayoutKey = '';
+    // 首次换刀前"手动选刀"的直径：换刀后回放轨迹时，toolId=null 的旧段仍按这把刀的宽度画
+    let simToolBeforeFirstChange = null;
     let animationId = null;
     let running = false;
     let simIndex = 0;
     let segmentT = 0;
-    let currentPos = { x: 0, y: 0, z: INITIAL_Z };
+    let currentPos = { x: 0, y: 0, z: activeTool.safeZ };
     let agentHistory = [];
     let latestAgentGCode = '';
+    let agentContextKey = '';
+    let latestAgentContextKey = '';
+    let pathLines = null;            // 合并后的刀具路径线段批次（避免每段一个 draw call）
+    let carveState = null;           // 高度场材料去除状态（网格、高度、颜色）
+    let lastCarvePos = null;         // 实时雕刻的上一次刀尖位置
 
     initScene();
     resetSimulation(false);
@@ -707,10 +1406,74 @@ M30`;
     });
     elements.roundStock.addEventListener('click', () => setStockShape('round'));
     elements.boxStock.addEventListener('click', () => setStockShape('box'));
+    elements.beginnerMode.addEventListener('click', () => setProgrammingMode(false));
+    elements.advancedMode.addEventListener('click', () => setProgrammingMode(true));
+
+    // 刀库输入变化：更新刀位配置并重新分析（与毛坯输入变化行为一致）
+    [
+      elements.magType1, elements.magType2, elements.magType3,
+      elements.magDia1, elements.magDia2, elements.magDia3
+    ].forEach(input => input.addEventListener('change', updateMagazineFromInputs));
+
+    function updateMagazineFromInputs() {
+      running = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      toolMagazine = {
+        1: { type: elements.magType1.value, diameter: clampNumber(elements.magDia1.value, 1, 50, 25) },
+        2: { type: elements.magType2.value, diameter: clampNumber(elements.magDia2.value, 1, 50, 5) },
+        3: { type: elements.magType3.value, diameter: clampNumber(elements.magDia3.value, 1, 50, 4) }
+      };
+      refreshAgentContextIfOpen();
+      resetSimulation(false);
+      if (elements.gcode.value.trim()) analyzeProgram();
+    }
+
+    // 编程模式：初级=单刀刀心编程（T/M06 视为普通指令忽略）；高级=多刀程序换刀（刀库面板可见）
+    function setProgrammingMode(advanced) {
+      if (advancedToolMode === advanced) return;
+      advancedToolMode = advanced;
+      elements.beginnerMode.classList.toggle('active', !advanced);
+      elements.advancedMode.classList.toggle('active', advanced);
+      elements.magazineCard.style.display = advanced ? '' : 'none';
+      if (advanced) {
+        // 面板显示时同步一次刀库输入框与状态（防止与状态脱节）
+        elements.magType1.value = toolMagazine[1].type;
+        elements.magType2.value = toolMagazine[2].type;
+        elements.magType3.value = toolMagazine[3].type;
+        elements.magDia1.value = toolMagazine[1].diameter;
+        elements.magDia2.value = toolMagazine[2].diameter;
+        elements.magDia3.value = toolMagazine[3].diameter;
+      }
+      updateDemoButtonLabel();
+      topViewLayoutKey = '';
+      refreshAgentContextIfOpen();
+      resetSimulation(false);
+      if (elements.gcode.value.trim()) analyzeProgram();
+    }
     elements.generateStock.addEventListener('click', generateStockFromInputs);
+    elements.toolPresets.forEach(button => button.addEventListener('click', () => selectToolPreset(Number(button.dataset.tool))));
+    elements.applyToolSettings.addEventListener('click', applyAdvancedToolSettings);
+    elements.toggleDoor.addEventListener('click', toggleSafetyDoor);
+    // 只有真正的"点击"（按下后位移小且时间短）才触发开关门，
+    // 从门上开始拖拽旋转视角不会误开门
+    elements.canvas.addEventListener('pointerdown', event => {
+      doorPointerStart = { x: event.clientX, y: event.clientY, time: performance.now() };
+    });
+    elements.canvas.addEventListener('pointerup', event => {
+      if (!doorPointerStart) return;
+      const moved = Math.hypot(event.clientX - doorPointerStart.x, event.clientY - doorPointerStart.y);
+      const elapsed = performance.now() - doorPointerStart.time;
+      doorPointerStart = null;
+      if (moved > 6 || elapsed > 600) return;
+      handleSceneDoorClick(event);
+    });
     document.getElementById('run').addEventListener('click', runSimulation);
     document.getElementById('reset').addEventListener('click', () => resetSimulation(true));
-    document.getElementById('analyze').addEventListener('click', analyzeProgram);
+    elements.openHelp.addEventListener('click', openHelpModal);
+    elements.closeHelp.addEventListener('click', closeHelpModal);
+    elements.helpModal.addEventListener('click', event => {
+      if (event.target === elements.helpModal) closeHelpModal();
+    });
     elements.openAgent.addEventListener('click', openAgentModal);
     elements.closeAgent.addEventListener('click', closeAgentModal);
     elements.agentModal.addEventListener('click', event => {
@@ -720,6 +1483,11 @@ M30`;
     elements.insertAgentCode.addEventListener('click', insertLatestAgentCode);
     elements.agentInput.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) sendAgentMessage();
+    });
+    window.addEventListener('keydown', event => {
+      if (event.key !== 'Escape') return;
+      if (elements.helpModal.classList.contains('open')) closeHelpModal();
+      if (elements.agentModal.classList.contains('open')) closeAgentModal();
     });
     window.addEventListener('resize', resizeRenderer);
 
@@ -771,20 +1539,354 @@ M30`;
       scene.add(axes);
 
       pathGroup = new THREE.Group();
-      surfaceCutGroup = new THREE.Group();
       crashGroup = new THREE.Group();
-      scene.add(surfaceCutGroup, pathGroup, crashGroup);
+      scene.add(pathGroup, crashGroup);
 
       toolGroup = createTool();
       scene.add(toolGroup);
 
+      createSafetyDoor();
+
       renderLoop();
     }
 
-    function createTool() {
+    function createSafetyDoor() {
+      doorGroup = new THREE.Group();
+      doorGroup.userData.isSafetyDoor = true;
+
+      const frameMaterial = new THREE.MeshStandardMaterial({
+        color: 0x24313a,
+        roughness: .32,
+        metalness: .84,
+        envMapIntensity: 1,
+        transparent: true
+      });
+      const housingMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd9e0e3,
+        roughness: .38,
+        metalness: .54,
+        envMapIntensity: .92,
+        transparent: true
+      });
+      const housingDarkMaterial = new THREE.MeshStandardMaterial({
+        color: 0x182128,
+        roughness: .46,
+        metalness: .72,
+        envMapIntensity: .78,
+        transparent: true
+      });
+      const glassMaterial = new THREE.MeshPhysicalMaterial({
+        color: 0x397d8b,
+        roughness: .16,
+        metalness: .05,
+        transparent: true,
+        opacity: .32,
+        transmission: .16,
+        depthWrite: false,
+        side: THREE.DoubleSide
+      });
+      const handleMaterial = new THREE.MeshStandardMaterial({
+        color: 0xd8e3e7,
+        roughness: .22,
+        metalness: .92,
+        transparent: true
+      });
+
+      const housingWidth = MACHINE_ENCLOSURE.width;
+      const openingWidth = MACHINE_ENCLOSURE.openingWidth;
+      const panelWidth = openingWidth / 2 + 1.2;
+      const bottomZ = MACHINE_ENCLOSURE.openingBottomZ;
+      const openingHeight = MACHINE_ENCLOSURE.openingHeight;
+      const centerZ = bottomZ + openingHeight / 2;
+      const frontY = MACHINE_ENCLOSURE.frontY;
+      const housingDepth = MACHINE_ENCLOSURE.depth;
+      const sideWidth = (housingWidth - openingWidth) / 2;
+      const fullHeight = openingHeight + 31;
+      const machineCenterZ = bottomZ - 11 + fullHeight / 2;
+
+      const addHousingBox = (width, depth, height, x, y, z, material = housingMaterial) => {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, depth, height), material);
+        mesh.position.set(x, y, z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        doorGroup.add(mesh);
+        return mesh;
+      };
+
+      addHousingBox(housingWidth, housingDepth, 18, 0, frontY + housingDepth / 2, bottomZ - 9, housingDarkMaterial);
+      addHousingBox(sideWidth, housingDepth, openingHeight + 9, -(openingWidth / 2 + sideWidth / 2), frontY + housingDepth / 2, centerZ + 2.5);
+      addHousingBox(sideWidth, housingDepth, openingHeight + 9, openingWidth / 2 + sideWidth / 2, frontY + housingDepth / 2, centerZ + 2.5);
+      addHousingBox(housingWidth, housingDepth, 9, 0, frontY + housingDepth / 2, bottomZ + openingHeight + 4.5);
+      addHousingBox(housingWidth, 2.4, fullHeight, 0, frontY + housingDepth - 1.2, machineCenterZ, housingDarkMaterial);
+
+      // 基座台面：填满机身内部的固定大台面，教学工作台（bedMesh）嵌在中央装夹。
+      // 顶面高度随毛坯自适应（positionEnclosurePedestal），随外壳一起淡出，
+      // 兼顾概览比例与开关门视图连续。
+      const apronMaterial = new THREE.MeshStandardMaterial({
+        color: 0x34434c,
+        roughness: .4,
+        metalness: .76,
+        envMapIntensity: .95,
+        transparent: true
+      });
+      const apronSlotMaterial = new THREE.MeshStandardMaterial({
+        color: 0x080b0d,
+        roughness: .74,
+        metalness: .38,
+        transparent: true
+      });
+      enclosurePedestal = new THREE.Group();
+      const apron = new THREE.Mesh(
+        new THREE.BoxGeometry(MACHINE_ENCLOSURE.apronWidth, MACHINE_ENCLOSURE.apronDepth, 1),
+        apronMaterial
+      );
+      apron.castShadow = true;
+      apron.receiveShadow = true;
+      apron.position.set(0, MACHINE_ENCLOSURE.apronCenterY, 0);
+      enclosurePedestal.add(apron);
+      enclosurePedestal.userData.apron = apron;
+      const apronSlots = [];
+      for (let slotIndex = -3; slotIndex <= 3; slotIndex++) {
+        const slot = new THREE.Mesh(
+          new THREE.BoxGeometry(MACHINE_ENCLOSURE.apronWidth * .94, 5.4, 1),
+          apronSlotMaterial
+        );
+        slot.position.set(0, MACHINE_ENCLOSURE.apronCenterY + slotIndex * 46, 0);
+        slot.receiveShadow = true;
+        enclosurePedestal.add(slot);
+        apronSlots.push(slot);
+      }
+      enclosurePedestal.userData.slots = apronSlots;
+      doorGroup.add(enclosurePedestal);
+      positionEnclosurePedestal();
+
+      const consoleWidth = Math.max(12, sideWidth * .72);
+      const consoleHeight = Math.max(18, openingHeight * .42);
+      const consoleX = openingWidth / 2 + sideWidth / 2;
+      const console = addHousingBox(consoleWidth, 4.2, consoleHeight, consoleX, frontY - 2, centerZ + 2, housingDarkMaterial);
+      console.rotation.x = -.04;
+      const screen = new THREE.Mesh(
+        new THREE.PlaneGeometry(consoleWidth * .68, consoleHeight * .34),
+        new THREE.MeshBasicMaterial({ map: createConsoleScreenTexture(), transparent: true })
+      );
+      screen.position.set(consoleX, frontY - 4.13, centerZ + consoleHeight * .14);
+      screen.rotation.x = Math.PI / 2;
+      doorGroup.add(screen);
+
+      // 急停：标准安全色样式（黄色托盘 + 红色蘑菇钮），红钮带自发光保证暗处也醒目
+      const emergencyStopCollar = new THREE.Mesh(
+        new THREE.CylinderGeometry(2.05, 2.05, .5, 32),
+        new THREE.MeshStandardMaterial({ color: 0xe8c531, roughness: .42, metalness: .18, transparent: true })
+      );
+      emergencyStopCollar.rotation.x = Math.PI;
+      emergencyStopCollar.position.set(consoleX, frontY - 4.35, centerZ - consoleHeight * .18);
+      doorGroup.add(emergencyStopCollar);
+
+      const emergencyStop = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.45, 1.45, .8, 32),
+        new THREE.MeshStandardMaterial({
+          color: 0xe5383b,
+          roughness: .26,
+          metalness: .12,
+          emissive: 0x330605,
+          emissiveIntensity: 1,
+          transparent: true
+        })
+      );
+      emergencyStop.rotation.x = Math.PI;
+      emergencyStop.position.set(consoleX, frontY - 4.85, centerZ - consoleHeight * .18);
+      doorGroup.add(emergencyStop);
+
+      const frameParts = [
+        { w: openingWidth + 4, h: 2, x: 0, z: bottomZ },
+        { w: openingWidth + 4, h: 2, x: 0, z: bottomZ + openingHeight },
+        { w: 2, h: openingHeight, x: -openingWidth / 2 - 1, z: centerZ },
+        { w: 2, h: openingHeight, x: openingWidth / 2 + 1, z: centerZ }
+      ];
+      frameParts.forEach(part => {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(part.w, 1.2, part.h), frameMaterial);
+        mesh.position.set(part.x, frontY, part.z);
+        mesh.castShadow = true;
+        doorGroup.add(mesh);
+      });
+
+      const makePanel = sign => {
+        const panel = new THREE.Group();
+        const glass = new THREE.Mesh(new THREE.BoxGeometry(panelWidth - 1.4, .55, openingHeight - 3.2), glassMaterial);
+        glass.userData.isSafetyDoorPanel = true;
+        panel.add(glass);
+
+        [-(panelWidth / 2 - .7), panelWidth / 2 - .7].forEach(x => {
+          const rail = new THREE.Mesh(new THREE.BoxGeometry(1.25, 1, openingHeight - 1.8), frameMaterial);
+          rail.position.x = x;
+          panel.add(rail);
+        });
+        [-1, 1].forEach(verticalSign => {
+          const rail = new THREE.Mesh(new THREE.BoxGeometry(panelWidth, 1, 1.25), frameMaterial);
+          rail.position.z = verticalSign * (openingHeight / 2 - 1.1);
+          panel.add(rail);
+        });
+
+        const handle = new THREE.Mesh(new THREE.BoxGeometry(.9, 2, 7), handleMaterial);
+        handle.position.set(-sign * (panelWidth / 2 - 2.6), -1.15, 0);
+        handle.userData.isSafetyDoorPanel = true;
+        panel.add(handle);
+        // 门板整体前移 0.5，滑开时从侧墙前方通过，避免与侧墙前面共面穿插
+        panel.position.set(sign * panelWidth / 2, frontY - .5, centerZ);
+        panel.userData.closedX = sign * panelWidth / 2;
+        panel.userData.openX = sign * (openingWidth / 2 + panelWidth * .44);
+        panel.userData.isSafetyDoorPanel = true;
+        panel.traverse(child => {
+          if (child.isMesh) {
+            child.userData.isSafetyDoorPanel = true;
+            doorHitMeshes.push(child);
+          }
+        });
+        return panel;
+      };
+
+      leftDoorPanel = makePanel(-1);
+      rightDoorPanel = makePanel(1);
+      doorGroup.add(leftDoorPanel, rightDoorPanel);
+      scene.add(doorGroup);
+
+      // 外壳整体淡出的材质清单（玻璃有基准透明度 .32，其余为 1）
+      enclosureFadeMaterials = [
+        { material: frameMaterial, base: 1 },
+        { material: housingMaterial, base: 1 },
+        { material: housingDarkMaterial, base: 1 },
+        { material: glassMaterial, base: .32 },
+        { material: handleMaterial, base: 1 },
+        { material: screen.material, base: 1 },
+        { material: emergencyStop.material, base: 1 },
+        { material: emergencyStopCollar.material, base: 1 },
+        { material: apronMaterial, base: 1 },
+        { material: apronSlotMaterial, base: 1 }
+      ];
+      updateDoorPanels();
+      applyDoorCamera(false);
+    }
+
+    // 控制屏纹理：低分辨率 Canvas 荧光绿字符（天然模糊 + 光晕 + 扫描线）
+    function createConsoleScreenTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 212;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#0c222b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255,255,255,.035)';
+      for (let y = 0; y < canvas.height; y += 4) ctx.fillRect(0, y, canvas.width, 1);
+      ctx.shadowColor = '#4dff9e';
+      ctx.shadowBlur = 7;
+      ctx.fillStyle = '#57e389';
+      ctx.font = 'bold 22px monospace';
+      ctx.fillText('CNC SIM', 14, 34);
+      ctx.font = '15px monospace';
+      ctx.fillText('X +000.000', 14, 72);
+      ctx.fillText('Y +000.000', 14, 96);
+      ctx.fillText('Z +015.000', 14, 120);
+      ctx.fillText('F 0240  S 0800', 14, 150);
+      ctx.font = 'bold 19px monospace';
+      ctx.fillText('READY', 14, 190);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    function toggleSafetyDoor() {
+      doorTargetOpen = !doorTargetOpen;
+      updateDoorControl();
+    }
+
+    function updateDoorControl() {
+      elements.doorControl.classList.toggle('open', doorTargetOpen);
+      elements.doorState.textContent = doorTargetOpen ? '安全门已打开' : '安全门已关闭';
+      elements.toggleDoor.textContent = doorTargetOpen ? '关闭安全门' : '打开安全门';
+      elements.toggleDoor.setAttribute('aria-pressed', String(doorTargetOpen));
+    }
+
+    function updateDoorPanels() {
+      if (!leftDoorPanel || !rightDoorPanel) return;
+      [leftDoorPanel, rightDoorPanel].forEach(panel => {
+        panel.position.x = THREE.MathUtils.lerp(panel.userData.closedX, panel.userData.openX, doorOpenProgress);
+      });
+      // 开门：门板先滑开（进度 0~0.25），随后镜头推进期间外壳整体平滑淡出（0.25~0.85），
+      // 到位后彻底隐藏；关门反向。工作台（bedMesh）两种视图共用，全程可见。
+      const fade = THREE.MathUtils.smoothstep(doorOpenProgress, .25, .85);
+      if (doorGroup) {
+        doorGroup.visible = doorOpenProgress < .85;
+        const shadowsOn = fade < .5;
+        if (doorGroup.userData.shadowsOn !== shadowsOn) {
+          doorGroup.userData.shadowsOn = shadowsOn;
+          doorGroup.traverse(child => {
+            if (child.isMesh) child.castShadow = shadowsOn;
+          });
+        }
+      }
+      enclosureFadeMaterials.forEach(entry => {
+        entry.material.opacity = entry.base * (1 - fade);
+      });
+    }
+
+    // 基座台面从机身底面顶到教学工作台（bedMesh）底面：台面体 z 缩放、槽条贴顶面，
+    // 随毛坯高度自适应（外壳本体只建一次）
+    function positionEnclosurePedestal() {
+      if (!enclosurePedestal) return;
+      const stock = getStock();
+      const tableThickness = stock.isLarge ? 5.2 : 3.4;
+      const tableBottomZ = -stock.height - .18 - tableThickness * 1.35;
+      const floorZ = MACHINE_ENCLOSURE.openingBottomZ;
+      const height = Math.max(1, tableBottomZ - floorZ);
+      const apron = enclosurePedestal.userData.apron;
+      apron.scale.z = height;
+      apron.position.z = floorZ + height / 2;
+      enclosurePedestal.userData.slots.forEach(slot => {
+        slot.position.z = floorZ + height + .22;
+      });
+    }
+
+    function getDoorCameraPose(open = doorTargetOpen) {
+      const stock = getStock();
+      if (open) {
+        return {
+          position: new THREE.Vector3(...stock.camera),
+          target: new THREE.Vector3(...stock.target)
+        };
+      }
+      return {
+        position: new THREE.Vector3(...MACHINE_ENCLOSURE.cameraPosition),
+        target: new THREE.Vector3(...MACHINE_ENCLOSURE.cameraTarget)
+      };
+    }
+
+    function applyDoorCamera(animated = true) {
+      const pose = getDoorCameraPose();
+      if (animated) return;
+      camera.position.copy(pose.position);
+      controls.target.copy(pose.target);
+      controls.update();
+    }
+
+    function handleSceneDoorClick(event) {
+      if (!doorHitMeshes.length) return;
+      const rect = elements.canvas.getBoundingClientRect();
+      const pointer = new THREE.Vector2(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -((event.clientY - rect.top) / rect.height) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(pointer, camera);
+      if (raycaster.intersectObjects(doorHitMeshes, false).length) toggleSafetyDoor();
+    }
+
+    function createTool(tool = activeTool) {
       const group = new THREE.Group();
       const rotatingParts = new THREE.Group();
       group.userData.rotatingParts = rotatingParts;
+      const toolRadius = tool.radius;
+      const cuttingLength = tool.cuttingLength;
+      const toolBodyHeight = tool.overhang;
 
       const spindleMaterial = new THREE.MeshStandardMaterial({
         color: 0x58616a,
@@ -829,67 +1931,120 @@ M30`;
         depthWrite: false
       });
 
-      const cuttingLength = TOOL_BODY_HEIGHT * .78;
-      const shankLength = TOOL_BODY_HEIGHT - cuttingLength + 1.4;
+      const shankLength = Math.max(.8, toolBodyHeight - cuttingLength);
+      const toolType = tool.type || 'endmill';
 
-      const cutterCore = createZCylinder(TOOL_RADIUS * .96, TOOL_RADIUS, cuttingLength, 72, cutterMaterial);
-      cutterCore.position.z = cuttingLength / 2 + .16;
-
-      const shank = createZCylinder(TOOL_RADIUS * .88, TOOL_RADIUS * .88, shankLength, 64, cutterMaterial);
+      const shank = createZCylinder(toolRadius * .88, toolRadius * .88, shankLength, 64, cutterMaterial);
       shank.position.z = cuttingLength + shankLength / 2 - .15;
 
-      const endFace = createZCylinder(TOOL_RADIUS * .94, TOOL_RADIUS * .98, .26, 72, edgeMaterial);
-      endFace.position.z = .08;
+      // —— 切削部分按刀型构建（刀尖位于 z≈0，向上伸展）——
+      if (toolType === 'drill') {
+        // 钻头：锥形尖 + 钻体 + 两条陡螺旋排屑槽
+        const tipLength = Math.min(cuttingLength * .45, toolRadius * 1.5);
+        const tip = createZCylinder(toolRadius * .96, toolRadius * .08, tipLength, 48, cutterMaterial);
+        tip.position.z = tipLength / 2 + .04;
+        const body = createZCylinder(toolRadius * .98, toolRadius * .96, Math.max(.4, cuttingLength - tipLength), 48, cutterMaterial);
+        body.position.z = tipLength + (cuttingLength - tipLength) / 2;
+        const tipEdge = createToolRing(toolRadius * .42, .05, tipLength * .85, edgeMaterial);
+        rotatingParts.add(tip, body, tipEdge);
+        for (let i = 0; i < 2; i++) {
+          const flute = createHelicalTube(
+            toolRadius + .03,
+            .12,
+            Math.max(.5, cuttingLength - tipLength - .6),
+            i * Math.PI,
+            Math.PI * 4.5,
+            5,
+            70,
+            fluteMaterial
+          );
+          flute.position.z = tipLength + .3;
+          rotatingParts.add(flute);
+        }
+      } else if (toolType === 'facemill') {
+        // 平面铣刀：短粗本体 + 底面可换刀片 + 排屑槽环
+        const body = createZCylinder(toolRadius, toolRadius * .93, cuttingLength, 72, cutterMaterial);
+        body.position.z = cuttingLength / 2 + .14;
+        const facePlate = createZCylinder(toolRadius * .97, toolRadius * .99, .3, 72, edgeMaterial);
+        facePlate.position.z = .15;
+        rotatingParts.add(body, facePlate);
+        for (let i = 0; i < 4; i++) {
+          const angle = i * Math.PI / 2 + Math.PI / 4;
+          const insert = new THREE.Mesh(
+            new THREE.BoxGeometry(toolRadius * .46, toolRadius * .2, .34),
+            fluteMaterial
+          );
+          insert.position.set(Math.cos(angle) * toolRadius * .7, Math.sin(angle) * toolRadius * .7, .17);
+          insert.rotation.z = angle;
+          insert.castShadow = true;
+          rotatingParts.add(insert);
+        }
+        for (let i = 0; i < 2; i++) {
+          rotatingParts.add(createToolRing(toolRadius + .02, .07, cuttingLength * (.35 + i * .3), shadowMaterial));
+        }
+      } else {
+        // 立铣刀：平底 + 端刃 + 四条螺旋容屑槽（原有造型）
+        const cutterCore = createZCylinder(toolRadius * .96, toolRadius, cuttingLength, 72, cutterMaterial);
+        cutterCore.position.z = cuttingLength / 2 + .16;
 
-      const lipA = new THREE.Mesh(
-        new THREE.BoxGeometry(TOOL_RADIUS * 1.72, .2, .12),
-        edgeMaterial
-      );
-      lipA.position.z = .14;
-      lipA.castShadow = true;
+        const endFace = createZCylinder(toolRadius * .94, toolRadius * .98, .26, 72, edgeMaterial);
+        endFace.position.z = .08;
 
-      const lipB = lipA.clone();
-      lipB.rotation.z = Math.PI / 2;
-
-      const centerRelief = createZCylinder(.32, .32, .14, 24, shadowMaterial);
-      centerRelief.position.z = .16;
-
-      const edgeRing = createToolRing(TOOL_RADIUS * .98, .055, .22, edgeMaterial);
-      const shoulderRing = createToolRing(TOOL_RADIUS * .9, .06, cuttingLength + .15, edgeMaterial);
-
-      for (let i = 0; i < 4; i++) {
-        const angle = i * Math.PI / 2;
-        const flute = createHelicalTube(
-          TOOL_RADIUS + .03,
-          .15,
-          cuttingLength - .28,
-          angle,
-          Math.PI * 2.7,
-          6,
-          92,
-          fluteMaterial
-        );
-        flute.position.z = .27;
-
-        const cuttingEdge = createHelicalTube(
-          TOOL_RADIUS + .13,
-          .045,
-          cuttingLength - .34,
-          angle + .28,
-          Math.PI * 2.7,
-          5,
-          92,
+        const lipA = new THREE.Mesh(
+          new THREE.BoxGeometry(toolRadius * 1.72, .2, .12),
           edgeMaterial
         );
-        cuttingEdge.position.z = .3;
-        rotatingParts.add(flute, cuttingEdge);
+        lipA.position.z = .14;
+        lipA.castShadow = true;
+
+        const lipB = lipA.clone();
+        lipB.rotation.z = Math.PI / 2;
+
+        const centerRelief = createZCylinder(.32, .32, .14, 24, shadowMaterial);
+        centerRelief.position.z = .16;
+
+        const edgeRing = createToolRing(toolRadius * .98, .055, .22, edgeMaterial);
+        const shoulderRing = createToolRing(toolRadius * .9, .06, cuttingLength + .15, edgeMaterial);
+
+        for (let i = 0; i < 4; i++) {
+          const angle = i * Math.PI / 2;
+          const flute = createHelicalTube(
+            toolRadius + .03,
+            .15,
+            cuttingLength - .28,
+            angle,
+            Math.PI * 2.7,
+            6,
+            92,
+            fluteMaterial
+          );
+          flute.position.z = .27;
+
+          const cuttingEdge = createHelicalTube(
+            toolRadius + .13,
+            .045,
+            cuttingLength - .34,
+            angle + .28,
+            Math.PI * 2.7,
+            5,
+            92,
+            edgeMaterial
+          );
+          cuttingEdge.position.z = .3;
+          rotatingParts.add(flute, cuttingEdge);
+        }
+
+        rotatingParts.add(cutterCore, endFace, lipA, lipB, centerRelief, edgeRing, shoulderRing);
       }
 
-      const colletNose = createZCylinder(TOOL_RADIUS * 1.08, TOOL_RADIUS * 1.58, 3.2, 72, colletMaterial);
-      colletNose.position.z = TOOL_BODY_HEIGHT + .05;
+      // 夹头锥面：大直径刀（平面铣刀）时收口到固定夹头尺寸
+      const colletTop = Math.min(toolRadius * 1.08, 5.2);
+      const colletBottom = Math.min(Math.max(3.1, toolRadius * 1.58), 5.2);
+      const colletNose = createZCylinder(colletTop, colletBottom, 3.2, 72, colletMaterial);
+      colletNose.position.z = toolBodyHeight + .05;
 
       const colletNut = createZCylinder(4.35, 4.05, 4.8, 12, colletMaterial);
-      colletNut.position.z = TOOL_BODY_HEIGHT + 3.55;
+      colletNut.position.z = toolBodyHeight + 3.55;
 
       for (let i = 0; i < 12; i++) {
         const angle = (i / 12) * Math.PI * 2;
@@ -897,35 +2052,28 @@ M30`;
           new THREE.BoxGeometry(.12, .3, 3.95),
           shadowMaterial
         );
-        groove.position.set(Math.cos(angle) * 4.38, Math.sin(angle) * 4.38, TOOL_BODY_HEIGHT + 3.55);
+        groove.position.set(Math.cos(angle) * 4.38, Math.sin(angle) * 4.38, toolBodyHeight + 3.55);
         groove.rotation.z = angle;
         rotatingParts.add(groove);
       }
 
-      const holderLowerRing = createToolRing(4.05, .12, TOOL_BODY_HEIGHT + 1.35, edgeMaterial);
-      const holderUpperRing = createToolRing(4.28, .13, TOOL_BODY_HEIGHT + 5.85, edgeMaterial);
+      const holderLowerRing = createToolRing(4.05, .12, toolBodyHeight + 1.35, edgeMaterial);
+      const holderUpperRing = createToolRing(4.28, .13, toolBodyHeight + 5.85, edgeMaterial);
 
       const chuckBody = createZCylinder(5.15, 5.15, 3.2, 80, holderMaterial);
-      chuckBody.position.z = TOOL_BODY_HEIGHT + 7.55;
+      chuckBody.position.z = toolBodyHeight + 7.55;
 
       const taper = createZCylinder(6.45, 5.1, 5.1, 80, holderMaterial);
-      taper.position.z = TOOL_BODY_HEIGHT + 11.7;
+      taper.position.z = toolBodyHeight + 11.7;
 
       const spindle = createZCylinder(7.35, 7.35, 4.5, 96, spindleMaterial);
-      spindle.position.z = TOOL_BODY_HEIGHT + 16.5;
+      spindle.position.z = toolBodyHeight + 16.5;
 
-      const spindleRingTop = createToolRing(7.2, .16, TOOL_BODY_HEIGHT + 18.7, edgeMaterial);
-      const spindleRingBottom = createToolRing(6.45, .14, TOOL_BODY_HEIGHT + 14.25, edgeMaterial);
+      const spindleRingTop = createToolRing(7.2, .16, toolBodyHeight + 18.7, edgeMaterial);
+      const spindleRingBottom = createToolRing(6.45, .14, toolBodyHeight + 14.25, edgeMaterial);
 
       rotatingParts.add(
-        cutterCore,
         shank,
-        endFace,
-        lipA,
-        lipB,
-        centerRelief,
-        edgeRing,
-        shoulderRing,
         colletNose,
         colletNut,
         holderLowerRing,
@@ -938,7 +2086,7 @@ M30`;
       );
 
       const spindleShadow = createZCylinder(7.5, 6.8, .18, 96, shadowMaterial);
-      spindleShadow.position.z = TOOL_BODY_HEIGHT + 14.05;
+      spindleShadow.position.z = toolBodyHeight + 14.05;
       rotatingParts.add(spindleShadow);
 
       group.add(rotatingParts);
@@ -1021,6 +2169,17 @@ M30`;
 
     function renderLoop() {
       controls.update();
+      const targetDoorProgress = doorTargetOpen ? 1 : 0;
+      if (Math.abs(doorOpenProgress - targetDoorProgress) > .001) {
+        doorOpenProgress = THREE.MathUtils.lerp(doorOpenProgress, targetDoorProgress, .12);
+        if (Math.abs(doorOpenProgress - targetDoorProgress) < .002) doorOpenProgress = targetDoorProgress;
+        updateDoorPanels();
+        const closedPose = getDoorCameraPose(false);
+        const openPose = getDoorCameraPose(true);
+        camera.position.lerpVectors(closedPose.position, openPose.position, doorOpenProgress);
+        controls.target.lerpVectors(closedPose.target, openPose.target, doorOpenProgress);
+        controls.update();
+      }
       if (toolGroup?.userData.rotatingParts) {
         toolGroup.userData.rotatingParts.rotation.z += running ? .42 : .018;
       }
@@ -1030,6 +2189,101 @@ M30`;
 
     function getStock() {
       return activeStock;
+    }
+
+    function createToolConfig(values) {
+      const diameter = clampNumber(values.diameter, 1, 60, 5);
+      const cuttingLength = clampNumber(values.cuttingLength, 2, 50, 12);
+      const overhang = clampNumber(values.overhang, cuttingLength, 80, Math.max(20, cuttingLength));
+      const type = TOOL_TYPES[values.type] ? values.type : 'endmill';
+      return {
+        diameter,
+        radius: diameter / 2,
+        type,
+        cuttingLength,
+        overhang,
+        safeZ: clampNumber(values.safeZ, 1, 50, 15),
+        maxSpindleSpeed: MAX_SPINDLE_SPEED,
+        use: values.use || '自定义'
+      };
+    }
+
+    // 从刀位配置（类型 + 直径）推导完整刀具参数：刃长/伸出量按刀型给合理默认值
+    function createMagazineTool(slot) {
+      const diameter = clampNumber(slot.diameter, 1, 60, 5);
+      const type = TOOL_TYPES[slot.type] ? slot.type : 'endmill';
+      let cuttingLength;
+      if (type === 'drill') {
+        cuttingLength = clampNumber(diameter * 5, 10, 50);      // 钻头刃长深
+      } else if (type === 'facemill') {
+        cuttingLength = clampNumber(diameter * .7, 3, 20);      // 面铣刀本体短
+      } else {
+        cuttingLength = clampNumber(diameter * 2.4, 5, 40);     // 立铣刀常规比例
+      }
+      return createToolConfig({
+        diameter,
+        type,
+        cuttingLength,
+        overhang: cuttingLength + (type === 'facemill' ? 14 : 8),
+        safeZ: 15,
+        use: toolTypeLabel({ type })
+      });
+    }
+
+    function selectToolPreset(diameter) {
+      const preset = TOOL_PRESETS[diameter];
+      if (!preset) return;
+      activeTool = createToolConfig(preset);
+      elements.toolCuttingLength.value = activeTool.cuttingLength;
+      elements.toolOverhang.value = activeTool.overhang;
+      elements.toolSafeZ.value = activeTool.safeZ;
+      applyToolConfiguration(diameter);
+    }
+
+    function applyAdvancedToolSettings() {
+      activeTool = createToolConfig({
+        diameter: activeTool.diameter,
+        type: activeTool.type,
+        cuttingLength: elements.toolCuttingLength.value,
+        overhang: elements.toolOverhang.value,
+        safeZ: elements.toolSafeZ.value,
+        use: '自定义参数'
+      });
+      elements.toolCuttingLength.value = activeTool.cuttingLength;
+      elements.toolOverhang.value = activeTool.overhang;
+      elements.toolSafeZ.value = activeTool.safeZ;
+      applyToolConfiguration(null);
+    }
+
+    function applyToolConfiguration(activePreset) {
+      running = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      elements.toolPresets.forEach(button => {
+        const selected = Number(button.dataset.tool) === activePreset;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
+      elements.toolSummary.textContent = `${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)} · 刃长${formatStockNumber(activeTool.cuttingLength)} · 伸出${formatStockNumber(activeTool.overhang)} · 安全Z${formatStockNumber(activeTool.safeZ)}`;
+      elements.toolSetupSummary.textContent = `当前刀具 ${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)} · S${MAX_SPINDLE_SPEED}`;
+      elements.radiusCompensation.textContent = `${activeTool.radius.toFixed(3)} mm`;
+      elements.lengthCompensation.textContent = `${activeTool.overhang.toFixed(3)} mm`;
+      activeStock = createStockConfig(activeStockShape, readStockInputs(activeStockShape));
+      refreshAgentContextIfOpen();
+      rebuildToolScene();
+      rebuildStockScene();
+      resetSimulation(false);
+      if (elements.gcode.value.trim()) analyzeProgram();
+    }
+
+    function rebuildToolScene() {
+      const previousPosition = toolGroup?.position?.clone();
+      if (toolGroup) {
+        scene.remove(toolGroup);
+        disposeObject(toolGroup);
+      }
+      toolGroup = createTool(activeTool);
+      scene.add(toolGroup);
+      if (previousPosition) toolGroup.position.copy(previousPosition);
     }
 
     function setStockShape(shape) {
@@ -1044,6 +2298,7 @@ M30`;
       running = false;
       if (animationId) cancelAnimationFrame(animationId);
       activeStock = createStockConfig(activeStockShape, readStockInputs(activeStockShape));
+      refreshAgentContextIfOpen();
       rebuildStockScene();
       applyCameraForStock();
       resetSimulation(false);
@@ -1054,7 +2309,7 @@ M30`;
       const height = clampNumber(elements.stockHeightInput.value, 1, 100, 8);
       if (shape === 'round') {
         return {
-          diameter: clampNumber(elements.stockDiameter.value, 5, 300, 32),
+          diameter: clampNumber(elements.stockDiameter.value, 5, 300, 50),
           height
         };
       }
@@ -1085,8 +2340,8 @@ M30`;
       const cameraDistance = Math.max(52, maxSide * 1.3);
       const cameraHeight = Math.max(30, maxSide * .75);
       const label = isRound
-        ? `棒材 Ø${formatStockNumber(diameter)}×${formatStockNumber(height)}mm / 刀具 Ø5mm`
-        : `长方形 ${formatStockNumber(width)}×${formatStockNumber(depth)}×${formatStockNumber(height)}mm / 刀具 Ø5mm`;
+        ? `棒材 Ø${formatStockNumber(diameter)}×${formatStockNumber(height)}mm / 刀具 ${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)}mm`
+        : `长方形 ${formatStockNumber(width)}×${formatStockNumber(depth)}×${formatStockNumber(height)}mm / 刀具 ${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)}mm`;
       const areaLabel = isRound
         ? `Ø${formatStockNumber(diameter)} 棒材`
         : `${formatStockNumber(width)}×${formatStockNumber(depth)} 长方形`;
@@ -1112,12 +2367,22 @@ M30`;
       return Number.isInteger(value) ? String(value) : value.toFixed(1);
     }
 
+    function openHelpModal() {
+      elements.helpModal.classList.add('open');
+      elements.helpModal.setAttribute('aria-hidden', 'false');
+      elements.closeHelp.focus();
+    }
+
+    function closeHelpModal() {
+      elements.helpModal.classList.remove('open');
+      elements.helpModal.setAttribute('aria-hidden', 'true');
+      elements.openHelp.focus();
+    }
+
     function openAgentModal() {
       elements.agentModal.classList.add('open');
       elements.agentModal.setAttribute('aria-hidden', 'false');
-      if (!agentHistory.length) {
-        appendAgentMessage('assistant', '你好，我会按当前材料尺寸生成 G 代码。坐标约定：X0/Y0 是工件上表面中心，Z0 是上表面。请描述要加工的形状、深度、进给和路径要求。');
-      }
+      syncAgentContext();
       elements.agentInput.focus();
     }
 
@@ -1134,13 +2399,73 @@ M30`;
       elements.agentChat.scrollTop = elements.agentChat.scrollHeight;
     }
 
+    function getAgentContextKey() {
+      const context = getAgentStockContext();
+      return JSON.stringify({
+        mode: context.mode,
+        type: context.type,
+        width: context.width,
+        depth: context.depth,
+        height: context.height,
+        tool: advancedToolMode ? null : context.tool,
+        toolMagazine: advancedToolMode ? context.toolMagazine : null,
+        maxSpindleSpeed: MAX_SPINDLE_SPEED
+      });
+    }
+
+    function getAgentModeIntro() {
+      if (!advancedToolMode) {
+        return `当前是初级模式：只能使用当前 ${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)}，不会生成 T 指令或 M06 换刀。请描述形状、尺寸和深度。`;
+      }
+      const slots = [1, 2, 3].map(id => {
+        const tool = createMagazineTool(toolMagazine[id]);
+        return `T0${id} ${toolTypeLabel(tool)} Ø${formatStockNumber(tool.diameter)}`;
+      }).join('；');
+      return `当前是高级模式：可按工序从刀库选择 ${slots}。程序会在安全高度停主轴后换刀，并按每把刀的真实参数校验。`;
+    }
+
+    function syncAgentContext() {
+      const nextKey = getAgentContextKey();
+      if (nextKey === agentContextKey && agentHistory.length) return;
+      agentContextKey = nextKey;
+      latestAgentContextKey = '';
+      latestAgentGCode = '';
+      agentHistory = [];
+      elements.agentChat.innerHTML = '';
+      elements.insertAgentCode.disabled = true;
+      elements.agentInput.placeholder = advancedToolMode
+        ? '例如：先铣平面，再铣十字槽，最后在周围钻 4 个孔。'
+        : '例如：用当前刀具铣一个深 1.5mm 的十字槽。';
+      appendAgentMessage('assistant', getAgentModeIntro());
+    }
+
+    function refreshAgentContextIfOpen() {
+      if (elements.agentModal.classList.contains('open')) syncAgentContext();
+    }
+
     function getAgentStockContext() {
       const stock = getStock();
       const isRound = stock.type === 'round';
-      const xLimit = Math.max(0, stock.width / 2 - TOOL_RADIUS);
-      const yLimit = Math.max(0, stock.depth / 2 - TOOL_RADIUS);
-      const radialLimit = Math.max(0, stock.radius - TOOL_RADIUS);
+      const xLimit = Math.max(0, stock.width / 2 - activeTool.radius);
+      const yLimit = Math.max(0, stock.depth / 2 - activeTool.radius);
+      const radialLimit = Math.max(0, stock.radius - activeTool.radius);
+      const magazine = Object.fromEntries([1, 2, 3].map(id => {
+        const tool = createMagazineTool(toolMagazine[id]);
+        return [id, {
+          id,
+          type: tool.type,
+          label: toolTypeLabel(tool),
+          diameter: tool.diameter,
+          radius: tool.radius,
+          cuttingLength: tool.cuttingLength,
+          overhang: tool.overhang,
+          safeZ: tool.safeZ,
+          maxSpindleSpeed: tool.maxSpindleSpeed
+        }];
+      }));
       return {
+        mode: advancedToolMode ? 'advanced' : 'beginner',
+        toolChangeAllowed: advancedToolMode,
         type: isRound ? 'round' : 'box',
         width: stock.width,
         depth: stock.depth,
@@ -1154,17 +2479,24 @@ M30`;
           bottomZ: -stock.height
         },
         tool: {
-          diameter: TOOL_RADIUS * 2,
-          radius: TOOL_RADIUS
+          type: activeTool.type,
+          label: toolTypeLabel(activeTool),
+          diameter: activeTool.diameter,
+          radius: activeTool.radius,
+          cuttingLength: activeTool.cuttingLength,
+          overhang: activeTool.overhang,
+          safeZ: activeTool.safeZ,
+          maxSpindleSpeed: activeTool.maxSpindleSpeed
         },
+        toolMagazine: magazine,
         safeArea: isRound
           ? { type: 'round', toolCenterRadius: radialLimit }
           : { type: 'box', xMin: -xLimit, xMax: xLimit, yMin: -yLimit, yMax: yLimit },
         alarms: {
-          safeZ: INITIAL_Z,
+          safeZ: activeTool.safeZ,
           maxSpindleSpeed: MAX_SPINDLE_SPEED,
-          cutDepthWarn: -CUT_DEPTH_WARN,
-          cutDepthCrash: -CUT_DEPTH_CRASH,
+          cutDepthWarn: -activeTool.cuttingLength * .8,
+          cutDepthCrash: -activeTool.cuttingLength,
           bottomZ: -stock.height,
           rapidIntoMaterial: 'red',
           rapidInsideMaterial: 'red',
@@ -1193,6 +2525,7 @@ M30`;
     }
 
     async function sendAgentMessage() {
+      syncAgentContext();
       const content = elements.agentInput.value.trim();
       if (!content || elements.sendAgent.disabled) return;
 
@@ -1211,6 +2544,7 @@ M30`;
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             messages: agentHistory,
+            mode: advancedToolMode ? 'advanced' : 'beginner',
             stock: getAgentStockContext(),
             currentGcode: elements.gcode.value
           })
@@ -1221,6 +2555,7 @@ M30`;
         const validationIssues = Array.isArray(data.validationIssues) ? data.validationIssues : [];
         const reply = `${data.reply || '没有收到有效回复。'}${formatAgentValidation(data)}`;
         latestAgentGCode = data.gcode || extractGCodeFromText(reply);
+        latestAgentContextKey = agentContextKey;
         agentHistory.push({ role: 'assistant', content: reply });
         appendAgentMessage('assistant', reply);
         elements.insertAgentCode.disabled = !latestAgentGCode || validationIssues.length > 0;
@@ -1240,6 +2575,12 @@ M30`;
 
     function insertLatestAgentCode() {
       if (!latestAgentGCode) return;
+      if (latestAgentContextKey !== getAgentContextKey()) {
+        latestAgentGCode = '';
+        elements.insertAgentCode.disabled = true;
+        appendAgentMessage('error', '材料、模式或刀具参数已经改变，请按当前参数重新生成程序。');
+        return;
+      }
       elements.gcode.value = latestAgentGCode;
       closeAgentModal();
       analyzeProgram();
@@ -1247,31 +2588,306 @@ M30`;
 
     function rebuildStockScene() {
       const stock = getStock();
-      [bedMesh, stockMesh].forEach(object => {
+      [bedMesh, carveGroup].forEach(object => {
         if (!object) return;
         scene.remove(object);
         disposeObject(object);
       });
+      carveState = null;
 
       bedMesh = createMachineTable(stock);
       scene.add(bedMesh);
 
-      const stockGeometry = stock.type === 'round'
-        ? new THREE.CylinderGeometry(stock.radius, stock.radius, stock.height, 96)
-        : new THREE.BoxGeometry(stock.width, stock.depth, stock.height);
-
-      stockMesh = new THREE.Mesh(
-        stockGeometry,
-        new THREE.MeshStandardMaterial({ color: 0xaeb8bd, roughness: .46, metalness: .34, envMapIntensity: .82 })
-      );
-      if (stock.type === 'round') stockMesh.rotation.x = Math.PI / 2;
-      stockMesh.position.z = -stock.height / 2;
-      stockMesh.castShadow = true;
-      stockMesh.receiveShadow = true;
-      scene.add(stockMesh);
+      carveGroup = buildCarveMesh(stock);
+      scene.add(carveGroup);
 
       elements.stockLabel.textContent = stock.label;
-      elements.loadDemo.textContent = shouldUseLargeDemo(stock) ? '加载花形实例' : '加载十字实例';
+      updateDemoButtonLabel();
+      positionEnclosurePedestal();
+      if (doorGroup) applyDoorCamera(false);
+    }
+
+    function updateDemoButtonLabel() {
+      const stock = getStock();
+      if (advancedToolMode && stock.type === 'round') {
+        elements.loadDemo.textContent = '加载三刀实例';
+      } else {
+        elements.loadDemo.textContent = shouldUseLargeDemo(stock) ? '加载花形实例' : '加载工字实例';
+      }
+    }
+
+    // ============ 高度场材料去除 ============
+    // 平底立铣刀的去除体积是圆柱体，与高度场表达严格等价：
+    // 刀尖经过处，圆盘覆盖的网格顶点高度取 min(当前高度, 刀尖Z)。
+    // 顶面为按高度置换的网格，侧裙沿边界从表面延伸到底面；flatShading 由着色器
+    // 按位置导数计算法线，因此雕刻时只需更新顶点位置，无需重算法线。
+
+    function buildCarveMesh(stock) {
+      const maxSide = Math.max(stock.width, stock.depth);
+      const cell = clampNumber(maxSide / 220, 0.1, 2);
+      const cols = Math.max(2, Math.ceil(stock.width / cell) + 1);
+      const rows = Math.max(2, Math.ceil(stock.depth / cell) + 1);
+      const cw = stock.width / (cols - 1);
+      const ch = stock.depth / (rows - 1);
+      const x0 = -stock.width / 2;
+      const y0 = -stock.depth / 2;
+      const vertexCount = cols * rows;
+      const radiusSq = stock.type === 'round' ? (stock.width / 2) ** 2 : Infinity;
+
+      const vertInside = new Uint8Array(vertexCount);
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const x = x0 + i * cw;
+          const y = y0 + j * ch;
+          vertInside[j * cols + i] = x * x + y * y <= radiusSq ? 1 : 0;
+        }
+      }
+
+      const cellInside = new Uint8Array((cols - 1) * (rows - 1));
+      const insideCell = (i, j) =>
+        i >= 0 && j >= 0 && i < cols - 1 && j < rows - 1 && cellInside[j * (cols - 1) + i] === 1;
+      for (let j = 0; j < rows - 1; j++) {
+        for (let i = 0; i < cols - 1; i++) {
+          const a = vertInside[j * cols + i];
+          const b = vertInside[j * cols + i + 1];
+          const c = vertInside[(j + 1) * cols + i];
+          const d = vertInside[(j + 1) * cols + i + 1];
+          const cx = x0 + (i + .5) * cw;
+          const cy = y0 + (j + .5) * ch;
+          const centerInside = stock.type !== 'round' || cx * cx + cy * cy <= radiusSq;
+          cellInside[j * (cols - 1) + i] = (a || b || c || d || centerInside) ? 1 : 0;
+        }
+      }
+
+      // 顶面索引：每个内部单元格两个三角形（从 +Z 看逆时针）
+      const topIndices = [];
+      for (let j = 0; j < rows - 1; j++) {
+        for (let i = 0; i < cols - 1; i++) {
+          if (!insideCell(i, j)) continue;
+          const v00 = j * cols + i;
+          topIndices.push(v00, v00 + 1, v00 + cols + 1, v00, v00 + cols + 1, v00 + cols);
+        }
+      }
+
+      // 侧裙边：内部单元格朝外的边（逆时针绕行，法线朝外）
+      const boundaryEdges = [];
+      for (let j = 0; j < rows - 1; j++) {
+        for (let i = 0; i < cols - 1; i++) {
+          if (!insideCell(i, j)) continue;
+          if (!insideCell(i, j - 1)) boundaryEdges.push({ va: j * cols + i, vb: j * cols + i + 1 });
+          if (!insideCell(i + 1, j)) boundaryEdges.push({ va: j * cols + i + 1, vb: (j + 1) * cols + i + 1 });
+          if (!insideCell(i, j + 1)) boundaryEdges.push({ va: (j + 1) * cols + i + 1, vb: (j + 1) * cols + i });
+          if (!insideCell(i - 1, j)) boundaryEdges.push({ va: (j + 1) * cols + i, vb: j * cols + i });
+        }
+      }
+      boundaryEdges.forEach(edge => {
+        edge.ax = x0 + (edge.va % cols) * cw;
+        edge.ay = y0 + Math.floor(edge.va / cols) * ch;
+        edge.bx = x0 + (edge.vb % cols) * cw;
+        edge.by = y0 + Math.floor(edge.vb / cols) * ch;
+      });
+
+      const topGeometry = new THREE.BufferGeometry();
+      const topPositions = new Float32Array(vertexCount * 3);
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const v = (j * cols + i) * 3;
+          topPositions[v] = x0 + i * cw;
+          topPositions[v + 1] = y0 + j * ch;
+          topPositions[v + 2] = 0;
+        }
+      }
+      topGeometry.setAttribute('position', new THREE.BufferAttribute(topPositions, 3));
+      topGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(vertexCount * 3), 3));
+      topGeometry.setIndex(topIndices);
+
+      const edgeCount = boundaryEdges.length;
+      const skirtGeometry = new THREE.BufferGeometry();
+      const skirtIndices = [];
+      for (let e = 0; e < edgeCount; e++) {
+        const base = e * 4;
+        skirtIndices.push(base, base + 1, base + 2, base, base + 2, base + 3);
+      }
+      skirtGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(edgeCount * 12), 3));
+      skirtGeometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(edgeCount * 12), 3));
+      skirtGeometry.setIndex(skirtIndices);
+
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        vertexColors: true,
+        flatShading: true,
+        roughness: .46,
+        metalness: .34,
+        envMapIntensity: .82
+      });
+
+      const topMesh = new THREE.Mesh(topGeometry, material);
+      topMesh.castShadow = true;
+      // 教学场景主轴位于工件正上方，接收阴影会在表面留下一块暗斑
+      topMesh.receiveShadow = false;
+      topMesh.frustumCulled = false;
+      const skirtMesh = new THREE.Mesh(skirtGeometry, material);
+      skirtMesh.castShadow = true;
+      skirtMesh.frustumCulled = false;
+
+      const group = new THREE.Group();
+      group.add(topMesh, skirtMesh);
+
+      carveState = {
+        cols, rows, x0, y0, cw, ch,
+        heights: new Float32Array(vertexCount),
+        colors: new Float32Array(vertexCount * 3),
+        vertInside,
+        boundaryEdges,
+        topMesh, skirtMesh,
+        dirty: false
+      };
+      resetCarve();
+      return group;
+    }
+
+    // 圆柱形刀印：平面铣刀生成银灰加工面，立铣刀与钻头保留蓝色深加工标识。
+    function carveStamp(x, y, z, radius = activeTool.radius, toolType = activeTool.type) {
+      const state = carveState;
+      if (!state || z > -0.01) return;
+      const stock = getStock();
+      const depth = Math.max(z, -stock.height);
+      const radiusSq = radius * radius;
+
+      const i0 = Math.max(0, Math.ceil((x - radius - state.x0) / state.cw));
+      const i1 = Math.min(state.cols - 1, Math.floor((x + radius - state.x0) / state.cw));
+      const j0 = Math.max(0, Math.ceil((y - radius - state.y0) / state.ch));
+      const j1 = Math.min(state.rows - 1, Math.floor((y + radius - state.y0) / state.ch));
+      if (i1 < i0 || j1 < j0) return;
+
+      const depthRatio = Math.min(1, -depth / Math.max(stock.height, 0.001)) * 0.75;
+      const surfaceColor = toolType === 'facemill' ? CARVE_COLORS.machined : CARVE_COLORS.fresh;
+      const deepColor = toolType === 'facemill' ? CARVE_COLORS.machinedDeep : CARVE_COLORS.deep;
+      const cr = surfaceColor.r + (deepColor.r - surfaceColor.r) * depthRatio;
+      const cg = surfaceColor.g + (deepColor.g - surfaceColor.g) * depthRatio;
+      const cb = surfaceColor.b + (deepColor.b - surfaceColor.b) * depthRatio;
+
+      for (let j = j0; j <= j1; j++) {
+        const dy = state.y0 + j * state.ch - y;
+        const dySq = dy * dy;
+        if (dySq > radiusSq) continue;
+        for (let i = i0; i <= i1; i++) {
+          const index = j * state.cols + i;
+          if (!state.vertInside[index]) continue;
+          const dx = state.x0 + i * state.cw - x;
+          if (dx * dx + dySq > radiusSq) continue;
+          if (state.heights[index] <= depth) continue;
+          state.heights[index] = depth;
+          state.colors[index * 3] = cr;
+          state.colors[index * 3 + 1] = cg;
+          state.colors[index * 3 + 2] = cb;
+          state.dirty = true;
+        }
+      }
+    }
+
+    // 沿轨迹插值盖章，步长不超过刀具半径的 45%，保证切痕连续（半径取该段刀具）
+    function carveAlong(a, b) {
+      if (!carveState || !a || !b) return;
+      const slot = a.toolId && toolMagazine[a.toolId] ? toolMagazine[a.toolId] : null;
+      const radius = slot ? slot.diameter / 2 : activeTool.radius;
+      const toolType = slot ? slot.type : activeTool.type;
+      const dist = distance(a, b);
+      const steps = Math.max(1, Math.ceil(dist / Math.max(0.25, radius * 0.45)));
+      for (let s = 1; s <= steps; s++) {
+        const t = s / steps;
+        carveStamp(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, radius, toolType);
+      }
+    }
+
+    function carveAllPoints(points) {
+      for (let i = 1; i < points.length; i++) {
+        carveAlong(points[i - 1], points[i]);
+      }
+    }
+
+    function resetCarve() {
+      if (!carveState) return;
+      carveState.heights.fill(0);
+      resetCarveColors();
+
+      // 高级棒材从一个浅凸“工”字开始，T01 的平面铣削会真实地把这层凸纹削掉。
+      const stock = getStock();
+      if (advancedToolMode && stock.type === 'round') {
+        const pattern = getAdvancedRoundPattern(stock);
+        for (let j = 0; j < carveState.rows; j++) {
+          const y = carveState.y0 + j * carveState.ch;
+          for (let i = 0; i < carveState.cols; i++) {
+            const index = j * carveState.cols + i;
+            if (!carveState.vertInside[index]) continue;
+            const x = carveState.x0 + i * carveState.cw;
+            const onHorizontal = Math.abs(x) <= pattern.halfWidth
+              && Math.abs(Math.abs(y) - pattern.halfHeight) <= pattern.stroke / 2;
+            const onVertical = Math.abs(x) <= pattern.stroke / 2
+              && Math.abs(y) <= pattern.halfHeight;
+            if (!onHorizontal && !onVertical) continue;
+            carveState.heights[index] = pattern.height;
+            carveState.colors[index * 3] = .92;
+            carveState.colors[index * 3 + 1] = .58;
+            carveState.colors[index * 3 + 2] = .16;
+          }
+        }
+      }
+      carveState.dirty = true;
+      flushCarve(true);
+    }
+
+    function resetCarveColors() {
+      const { colors, heights } = carveState;
+      for (let v = 0; v < heights.length; v++) {
+        colors[v * 3] = CARVE_COLORS.base.r;
+        colors[v * 3 + 1] = CARVE_COLORS.base.g;
+        colors[v * 3 + 2] = CARVE_COLORS.base.b;
+      }
+    }
+
+    // 把高度场写回 GPU（脏时整体重写位置与颜色缓冲）。
+    // 仿真中时间节流（50ms 上传一次，约 1/3 帧率成本），force=true 时立即上传
+    let lastCarveFlushAt = 0;
+    function flushCarve(force = false) {
+      const state = carveState;
+      if (!state || !state.dirty) return;
+      if (!force) {
+        const now = performance.now();
+        if (now - lastCarveFlushAt < 50) return;
+        lastCarveFlushAt = now;
+      }
+      state.dirty = false;
+
+      const topPosition = state.topMesh.geometry.attributes.position;
+      for (let v = 0; v < state.heights.length; v++) {
+        topPosition.array[v * 3 + 2] = state.heights[v];
+      }
+      topPosition.needsUpdate = true;
+      state.topMesh.geometry.attributes.color.array.set(state.colors);
+      state.topMesh.geometry.attributes.color.needsUpdate = true;
+
+      const bottom = -getStock().height;
+      const skirtPosition = state.skirtMesh.geometry.attributes.position.array;
+      const skirtColor = state.skirtMesh.geometry.attributes.color.array;
+      state.boundaryEdges.forEach((edge, e) => {
+        const ha = state.heights[edge.va];
+        const hb = state.heights[edge.vb];
+        let o = e * 12;
+        skirtPosition[o] = edge.ax; skirtPosition[o + 1] = edge.ay; skirtPosition[o + 2] = bottom;
+        skirtPosition[o + 3] = edge.bx; skirtPosition[o + 4] = edge.by; skirtPosition[o + 5] = bottom;
+        skirtPosition[o + 6] = edge.bx; skirtPosition[o + 7] = edge.by; skirtPosition[o + 8] = hb;
+        skirtPosition[o + 9] = edge.ax; skirtPosition[o + 10] = edge.ay; skirtPosition[o + 11] = ha;
+
+        const ca = edge.va * 3;
+        const cb2 = edge.vb * 3;
+        skirtColor[o] = state.colors[ca]; skirtColor[o + 1] = state.colors[ca + 1]; skirtColor[o + 2] = state.colors[ca + 2];
+        skirtColor[o + 3] = state.colors[cb2]; skirtColor[o + 4] = state.colors[cb2 + 1]; skirtColor[o + 5] = state.colors[cb2 + 2];
+        skirtColor[o + 6] = state.colors[cb2]; skirtColor[o + 7] = state.colors[cb2 + 1]; skirtColor[o + 8] = state.colors[cb2 + 2];
+        skirtColor[o + 9] = state.colors[ca]; skirtColor[o + 10] = state.colors[ca + 1]; skirtColor[o + 11] = state.colors[ca + 2];
+      });
+      state.skirtMesh.geometry.attributes.position.needsUpdate = true;
+      state.skirtMesh.geometry.attributes.color.needsUpdate = true;
     }
 
     function createMachineTable(stock) {
@@ -1511,10 +3127,7 @@ M30`;
     }
 
     function applyCameraForStock() {
-      const stock = getStock();
-      camera.position.set(...stock.camera);
-      controls.target.set(...stock.target);
-      controls.update();
+      applyDoorCamera(false);
       drawTopView(pathPoints, currentPos, running ? simIndex : pathPoints.length - 1);
     }
 
@@ -1536,7 +3149,12 @@ M30`;
     }
 
     function getDemoCode() {
-      return shouldUseLargeDemo(getStock()) ? createFlowerDemoCode() : crossDemoCode;
+      if (advancedToolMode && getStock().type === 'round') {
+        return createAdvancedRoundDemoCode();
+      }
+      return shouldUseLargeDemo(getStock())
+        ? createFlowerDemoCode()
+        : createGongDemoCode();
     }
 
     function shouldUseLargeDemo(stock) {
@@ -1547,7 +3165,7 @@ M30`;
       const lines = [
         'O3003 (大材料花形加工实例)',
         'G21 G17 G90',
-        'G00 X0 Y0 Z15',
+        `G00 X0 Y0 Z${formatStockNumber(activeTool.safeZ)}`,
         'M03 S800'
       ];
 
@@ -1562,12 +3180,12 @@ M30`;
         });
       }
 
-      lines.push(`G00 X${points[0].x.toFixed(3)} Y${points[0].y.toFixed(3)} Z15`);
+      lines.push(`G00 X${points[0].x.toFixed(3)} Y${points[0].y.toFixed(3)} Z${formatStockNumber(activeTool.safeZ)}`);
       lines.push('G01 Z-2 F100');
       points.slice(1).forEach(point => {
         lines.push(`G01 X${point.x.toFixed(3)} Y${point.y.toFixed(3)} F260`);
       });
-      lines.push('G00 Z15');
+      lines.push(`G00 Z${formatStockNumber(activeTool.safeZ)}`);
       lines.push('G00 X0 Y0');
       lines.push('M05');
       lines.push('M30');
@@ -1578,7 +3196,17 @@ M30`;
       const rows = code.split(/\r?\n/);
       const result = [];
       const events = [];
-      let modal = { g: 0, x: 0, y: 0, z: INITIAL_Z, f: null, spindleOn: false, spindleSpeed: null };
+      let modal = {
+        g: 0,
+        x: 0,
+        y: 0,
+        z: activeTool.safeZ,
+        f: null,
+        spindleOn: false,
+        spindleSpeed: null,
+        toolId: null   // null = 手动选中的当前刀（首次 M06 之前）
+      };
+      let pendingToolId = null;   // T 预选：支持 "T02 M06" 同行与分行两种写法
 
       rows.forEach((raw, index) => {
         const cleaned = raw.replace(/\(.*?\)/g, '').replace(/;.*/, '').trim();
@@ -1603,6 +3231,8 @@ M30`;
         };
         let speedCommand = null;
         let spindleCommand = null;
+        let toolChangeRequest = false;
+        let tWord = null;
 
         tokens.forEach(token => {
           const key = token[0].toUpperCase();
@@ -1634,12 +3264,31 @@ M30`;
             spindleCommand = value;
             if (value === 3 || value === 4) modal.spindleOn = true;
             if (value === 5) modal.spindleOn = false;
+            if (value === 6) toolChangeRequest = true;
+          } else if (key === 'T') {
+            tWord = Math.round(value);
           } else if (key === 'I') {
             cmd.i = value;
           } else if (key === 'J') {
             cmd.j = value;
           }
         });
+
+        // 换刀处理（仅高级模式）：M06 生效时采用本行 T 或此前预选的 T；
+        // M06 自动停主轴（与真实机床一致）。初级模式 T/M06 按普通指令忽略。
+        if (toolChangeRequest && advancedToolMode) {
+          const targetId = tWord ?? pendingToolId;
+          if (targetId && toolMagazine[targetId]) {
+            cmd.toolChange = { line: index + 1, to: targetId, from: modal.toolId };
+            modal.toolId = targetId;
+            cmd.hasMove = true;   // 生成一个零位移路径点，让仿真在换刀处停顿展示
+          }
+          if (spindleCommand !== 3 && spindleCommand !== 4) modal.spindleOn = false;
+          pendingToolId = null;
+        } else if (tWord && toolMagazine[tWord]) {
+          pendingToolId = tWord;
+        }
+        cmd.toolId = modal.toolId;
 
         cmd.g = cmd.g ?? modal.g;
         cmd.rapid = cmd.g === 0;
@@ -1664,7 +3313,7 @@ M30`;
     }
 
     function buildPath(cmds) {
-      const points = [{ x: 0, y: 0, z: INITIAL_Z, rapid: true, line: 0, raw: 'START' }];
+      const points = [{ x: 0, y: 0, z: activeTool.safeZ, rapid: true, line: 0, raw: 'START', toolId: null }];
       let length = 0;
 
       cmds.forEach(cmd => {
@@ -1672,7 +3321,17 @@ M30`;
         samples.forEach(point => {
           const last = points[points.length - 1];
           length += distance(last, point);
-          points.push({ ...point, rapid: cmd.rapid, line: cmd.line, raw: cmd.raw, g: cmd.g, spindleOn: cmd.spindleOn, spindleSpeed: cmd.spindleSpeed });
+          points.push({
+            ...point,
+            rapid: cmd.rapid,
+            line: cmd.line,
+            raw: cmd.raw,
+            g: cmd.g,
+            spindleOn: cmd.spindleOn,
+            spindleSpeed: cmd.spindleSpeed,
+            toolId: cmd.toolId,
+            toolChange: cmd.toolChange
+          });
         });
       });
 
@@ -1719,6 +3378,15 @@ M30`;
       const seen = new Set();
       const stock = getStock();
       const events = cmds.events || [];
+      // 报警校验用"路径点当时的那把刀"（高级模式多刀程序每段刀具可能不同），按刀位缓存
+      const magazineToolCache = new Map();
+      const pointTool = p => {
+        if (!p.toolId || !toolMagazine[p.toolId]) return activeTool;
+        if (!magazineToolCache.has(p.toolId)) {
+          magazineToolCache.set(p.toolId, createMagazineTool(toolMagazine[p.toolId]));
+        }
+        return magazineToolCache.get(p.toolId);
+      };
 
       events.forEach(event => {
         if (event.speedCommand !== null && event.speedCommand > MAX_SPINDLE_SPEED && !seen.has(`${event.line}-speed`)) {
@@ -1734,37 +3402,56 @@ M30`;
       points.forEach((p, index) => {
         if (index === 0) return;
         const prev = points[index - 1];
-        const inStockArea = isInsideStockArea(p, TOOL_RADIUS);
+        const tool = pointTool(p);
+        const intersectsStock = isInsideStockArea(p, tool.radius);
+        const toolWithinStock = isInsideStockArea(p, -tool.radius);
         const xyMove = Math.hypot(p.x - prev.x, p.y - prev.y) > 0.01;
         const rapidDown = p.z < prev.z - 0.01;
         const insideMaterial = p.z < -0.05;
         const key = `${p.line}-`;
 
-        if (p.rapid && insideMaterial && inStockArea && rapidDown && !seen.has(key + 'rapid-down')) {
+        // 换刀点必须抬到安全高度（真实机床换刀在换刀平面进行）
+        if (p.toolChange && p.z < tool.safeZ - .05 && !seen.has(key + 'toolchange-z')) {
+          seen.add(key + 'toolchange-z');
+          result.push({ type: 'warn', line: p.line, point: p, message: `第 ${p.line} 行换刀时 Z${p.z.toFixed(2)} 低于安全高度 Z${tool.safeZ.toFixed(1)}，真实机床应在安全高度换刀。` });
+        }
+
+        if (p.rapid && insideMaterial && intersectsStock && rapidDown && !seen.has(key + 'rapid-down')) {
           seen.add(key + 'rapid-down');
           result.push({ type: 'crash', line: p.line, point: p, message: `G00 快速下刀进入材料，当前 Z${p.z.toFixed(2)}，存在撞刀风险。` });
         }
-        if (p.rapid && insideMaterial && inStockArea && xyMove && !seen.has(key + 'rapid-xy')) {
+        if (p.rapid && insideMaterial && intersectsStock && xyMove && !seen.has(key + 'rapid-xy')) {
           seen.add(key + 'rapid-xy');
           result.push({ type: 'crash', line: p.line, point: p, message: `G00 未抬刀就在材料内快速横移，当前 Z${p.z.toFixed(2)}，存在撞刀风险。` });
         }
         if (p.z < -stock.height && !seen.has(key + 'bottom')) {
           seen.add(key + 'bottom');
           result.push({ type: 'crash', line: p.line, point: p, message: `Z${p.z.toFixed(2)} 已低于工件底面 -${stock.height.toFixed(1)}mm，可能穿透工件或撞到工作台。` });
-        } else if (!p.rapid && p.z < -CUT_DEPTH_CRASH && !seen.has(key + 'deep-crash')) {
-          seen.add(key + 'deep-crash');
-          result.push({ type: 'crash', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过 ${CUT_DEPTH_CRASH.toFixed(1)}mm，切深过大。` });
-        } else if (!p.rapid && p.z < -CUT_DEPTH_WARN && !seen.has(key + 'deep-warn')) {
-          seen.add(key + 'deep-warn');
-          result.push({ type: 'warn', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过 ${CUT_DEPTH_WARN.toFixed(1)}mm，切深偏大，请确认工艺参数。` });
+        } else if (!p.rapid && Math.abs(Math.min(0, p.z)) > tool.overhang && !seen.has(key + 'holder-crash')) {
+          seen.add(key + 'holder-crash');
+          result.push({ type: 'crash', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过刀具伸出量 ${tool.overhang.toFixed(1)}mm，刀柄会接触工件。` });
+        } else if (!p.rapid && Math.abs(Math.min(0, p.z)) > tool.cuttingLength && !seen.has(key + 'flute-crash')) {
+          seen.add(key + 'flute-crash');
+          result.push({ type: 'crash', line: p.line, point: p, message: `切削深度 ${Math.abs(p.z).toFixed(2)}mm 超过刃长 ${tool.cuttingLength.toFixed(1)}mm，刀杆可能摩擦工件。` });
+        } else if (!p.rapid && Math.abs(Math.min(0, p.z)) > tool.cuttingLength * .8 && !seen.has(key + 'flute-warn')) {
+          seen.add(key + 'flute-warn');
+          result.push({ type: 'warn', line: p.line, point: p, message: `已使用刀刃长度的 80% 以上（当前 ${Math.abs(p.z).toFixed(2)}mm / 刃长 ${tool.cuttingLength.toFixed(1)}mm），请确认装夹与刚性。` });
         }
         if (!p.rapid && p.z < 0 && !p.spindleOn && !seen.has(key + 'spindle-off')) {
           seen.add(key + 'spindle-off');
           result.push({ type: 'crash', line: p.line, point: p, message: '主轴未启动就开始切削，请先执行 M03/M04。' });
         }
-        if (!p.rapid && p.z <= 0 && !inStockArea && !seen.has(key + 'outside')) {
+        if (!p.rapid && p.z <= 0 && !toolWithinStock && !seen.has(key + 'outside')) {
           seen.add(key + 'outside');
           result.push({ type: 'warn', line: p.line, point: p, message: `切削点超出 ${stock.areaLabel} 范围。` });
+        }
+        if (p.rapid && xyMove && p.z < tool.safeZ - .05 && !seen.has(key + 'safe-z')) {
+          seen.add(key + 'safe-z');
+          result.push({ type: 'warn', line: p.line, point: p, message: `G00 横向快速移动时 Z${p.z.toFixed(2)} 低于设置的安全高度 Z${tool.safeZ.toFixed(1)}，教学练习建议先抬刀。` });
+        }
+        if (tool.type === 'drill' && !p.rapid && insideMaterial && xyMove && !seen.has(key + 'drill-xy')) {
+          seen.add(key + 'drill-xy');
+          result.push({ type: 'warn', line: p.line, point: p, message: '钻头横向进给切削：麻花钻刚性差、横刃无法侧切，易折断。开槽请用立铣刀，钻孔用 G81/G83 循环或逐孔 Z 轴进给。' });
         }
       });
 
@@ -1783,9 +3470,10 @@ M30`;
     function isInsideStockArea(point, margin = 0) {
       const stock = getStock();
       if (stock.type === 'round') {
-        return Math.hypot(point.x, point.y) <= stock.radius + margin;
+        return Math.hypot(point.x, point.y) <= Math.max(0, stock.radius + margin);
       }
-      return Math.abs(point.x) <= stock.width / 2 + margin && Math.abs(point.y) <= stock.depth / 2 + margin;
+      return Math.abs(point.x) <= Math.max(0, stock.width / 2 + margin)
+        && Math.abs(point.y) <= Math.max(0, stock.depth / 2 + margin);
     }
 
     function analyzeProgram() {
@@ -1801,11 +3489,16 @@ M30`;
       totalLength = built.length;
       alarms = detectAlarms(pathPoints, commands);
 
-      clearGroup(pathGroup);
-      clearGroup(surfaceCutGroup);
+      disposePathLines();
+      resetCarve();
       clearGroup(crashGroup);
       drawFullPath(pathPoints);
-      drawSurfaceCuts(pathPoints);
+      // 高级棒材保留“工”字初始毛坯，等待开始仿真后再按 T01→T02→T03 实时加工。
+      // 其他实例继续展示完整加工预览，保持原有使用习惯。
+      if (!(advancedToolMode && getStock().type === 'round')) {
+        carveAllPoints(pathPoints);
+      }
+      flushCarve(true);
       drawCrashes(alarms);
       drawBounds(pathPoints);
       drawTopView(pathPoints, pathPoints[0], pathPoints.length - 1);
@@ -1819,60 +3512,15 @@ M30`;
     }
 
     function drawFullPath(points) {
+      initPathLines();
       for (let i = 1; i < points.length; i++) {
         addPathSegment(points[i - 1], points[i]);
       }
     }
 
-    function drawSurfaceCuts(points) {
-      buildCutSegments(points).forEach(segment => {
-        addSurfaceCut(segment.start, segment.end, segment);
-      });
-    }
-
-    function buildCutSegments(points) {
-      const segments = [];
-      let current = null;
-
-      for (let i = 1; i < points.length; i++) {
-        const a = points[i - 1];
-        const b = points[i];
-        if (b.rapid || Math.min(a.z, b.z) > 0) {
-          current = null;
-          continue;
-        }
-
-        const xyDistance = Math.hypot(b.x - a.x, b.y - a.y);
-        if (xyDistance < 0.03) {
-          current = null;
-          continue;
-        }
-
-        const angle = Math.atan2(b.y - a.y, b.x - a.x);
-        const depth = getVisualCutDepth(a, b);
-        const continuesCurrent = current
-          && current.line === b.line
-          && Math.hypot(a.x - current.end.x, a.y - current.end.y) < 0.08
-          && Math.abs(a.z - current.end.z) < 0.08
-          && Math.abs(depth - current.depth) < 0.18
-          && angleDelta(angle, current.angle) < 0.035;
-
-        if (continuesCurrent) {
-          current.end = b;
-          current.depth = Math.max(current.depth, depth);
-        } else {
-          current = { start: a, end: b, line: b.line, angle, depth, startCap: true, endCap: true };
-          segments.push(current);
-        }
-      }
-
-      return segments;
-    }
-
-    function angleDelta(a, b) {
-      return Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)));
-    }
-
+    // 顶视图增量绘制：背景层（网格/毛坯/标签）静态缓存，轨迹层离屏累积，
+    // 每帧仅合成 2 次 drawImage + 活动刀圈，避免全量重画上千段轨迹。
+    // 离屏画布状态（topViewBgCanvas 等）声明在模块顶部状态区，避免初始化 TDZ。
     function drawTopView(points = [], activePoint = currentPos, uptoIndex = points.length - 1) {
       const canvas = elements.topView;
       const rect = canvas.getBoundingClientRect();
@@ -1892,64 +3540,141 @@ M30`;
       const viewSize = Math.max(42, maxSide * 1.18);
       const gridStep = maxSide >= 120 ? 25 : 5;
       const scale = Math.min(width, height) / viewSize;
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = '#0d1012';
-      ctx.fillRect(0, 0, width, height);
 
-      ctx.strokeStyle = 'rgba(61, 214, 208, .12)';
-      ctx.lineWidth = 1;
-      const gridLimit = Math.ceil(viewSize / 2 / gridStep) * gridStep;
-      for (let i = -gridLimit; i <= gridLimit; i += gridStep) {
-        ctx.beginPath();
-        ctx.moveTo(cx + i * scale, 0);
-        ctx.lineTo(cx + i * scale, height);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(0, cy - i * scale);
-        ctx.lineTo(width, cy - i * scale);
-        ctx.stroke();
+      // 布局变化（尺寸/毛坯/刀库/当前刀）时两层全部失效重建
+      const magKey = [1, 2, 3].map(id => toolMagazine[id] ? `${toolMagazine[id].type[0]}${toolMagazine[id].diameter}` : '-').join(',');
+      const layoutKey = `${width}x${height}|${stock.type}${stock.width}x${stock.depth}|${magKey}|${activeTool.diameter}`;
+      if (layoutKey !== topViewLayoutKey) {
+        topViewLayoutKey = layoutKey;
+        topViewBgCanvas = null;
+        topViewTraceCanvas = null;
+        topViewDrawnIndex = 0;
       }
 
-      ctx.strokeStyle = 'rgba(61, 214, 208, .55)';
-      ctx.beginPath();
-      ctx.moveTo(cx, 0);
-      ctx.lineTo(cx, height);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(0, cy);
-      ctx.lineTo(width, cy);
-      ctx.stroke();
+      // —— 背景层（网格 + 轴线 + 毛坯轮廓 + 标签，只在布局变化时重画）——
+      if (!topViewBgCanvas) {
+        topViewBgCanvas = document.createElement('canvas');
+        topViewBgCanvas.width = width;
+        topViewBgCanvas.height = height;
+        const bg = topViewBgCanvas.getContext('2d');
+        bg.fillStyle = '#0d1012';
+        bg.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = 'rgba(112, 123, 130, .22)';
-      ctx.strokeStyle = 'rgba(220, 231, 234, .55)';
-      ctx.lineWidth = 2;
-      if (stock.type === 'round') {
-        ctx.beginPath();
-        ctx.arc(cx, cy, stock.radius * scale, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-      } else {
-        const w = stock.width * scale;
-        const h = stock.depth * scale;
-        ctx.fillRect(cx - w / 2, cy - h / 2, w, h);
-        ctx.strokeRect(cx - w / 2, cy - h / 2, w, h);
+        bg.strokeStyle = 'rgba(61, 214, 208, .12)';
+        bg.lineWidth = 1;
+        const gridLimit = Math.ceil(viewSize / 2 / gridStep) * gridStep;
+        for (let i = -gridLimit; i <= gridLimit; i += gridStep) {
+          bg.beginPath();
+          bg.moveTo(cx + i * scale, 0);
+          bg.lineTo(cx + i * scale, height);
+          bg.stroke();
+          bg.beginPath();
+          bg.moveTo(0, cy - i * scale);
+          bg.lineTo(width, cy - i * scale);
+          bg.stroke();
+        }
+
+        bg.strokeStyle = 'rgba(61, 214, 208, .55)';
+        bg.beginPath();
+        bg.moveTo(cx, 0);
+        bg.lineTo(cx, height);
+        bg.stroke();
+        bg.beginPath();
+        bg.moveTo(0, cy);
+        bg.lineTo(width, cy);
+        bg.stroke();
+
+        bg.fillStyle = 'rgba(112, 123, 130, .22)';
+        bg.strokeStyle = 'rgba(220, 231, 234, .55)';
+        bg.lineWidth = 2;
+        if (stock.type === 'round') {
+          bg.beginPath();
+          bg.arc(cx, cy, stock.radius * scale, 0, Math.PI * 2);
+          bg.fill();
+          bg.stroke();
+        } else {
+          const w = stock.width * scale;
+          const h = stock.depth * scale;
+          bg.fillRect(cx - w / 2, cy - h / 2, w, h);
+          bg.strokeRect(cx - w / 2, cy - h / 2, w, h);
+        }
+
+        bg.fillStyle = 'rgba(238,243,246,.72)';
+        bg.font = `${10 * dpr}px Consolas, monospace`;
+        bg.fillText('X', width - 18 * dpr, cy - 5 * dpr);
+        bg.fillText('Y', cx + 6 * dpr, 17 * dpr);
+        const stockText = stock.type === 'round'
+          ? `Ø${formatStockNumber(stock.width)}`
+          : `${formatStockNumber(stock.width)}x${formatStockNumber(stock.depth)}`;
+        const labelY = stock.type === 'round' ? cy - stock.radius * scale - 7 * dpr : cy - stock.depth * scale / 2 - 7 * dpr;
+        bg.fillText(stockText, cx - 20 * dpr, labelY);
       }
 
+      // —— 轨迹层（增量累积：只画 [已画索引+1 .. 当前索引] 的段）——
       const lastIndex = Math.max(0, Math.min(uptoIndex, points.length - 1));
-      for (let i = 1; i <= lastIndex; i++) {
-        const a = points[i - 1];
-        const b = points[i];
-        ctx.strokeStyle = b.rapid ? 'rgba(240,177,59,.85)' : 'rgba(35,194,119,.88)';
-        ctx.lineWidth = b.rapid ? 1.4 : Math.max(2, TOOL_RADIUS * 2 * scale);
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.setLineDash(b.rapid ? [5, 4] : []);
-        ctx.beginPath();
-        ctx.moveTo(cx + a.x * scale, cy - a.y * scale);
-        ctx.lineTo(cx + b.x * scale, cy - b.y * scale);
-        ctx.stroke();
+      if (!topViewTraceCanvas) {
+        topViewTraceCanvas = document.createElement('canvas');
+        topViewTraceCanvas.width = width;
+        topViewTraceCanvas.height = height;
+        topViewDrawnIndex = 0;
       }
-      ctx.setLineDash([]);
+      if (lastIndex < topViewDrawnIndex) {
+        // 进度回退（重新运行/重置）：清空轨迹层从头累积
+        topViewTraceCanvas.getContext('2d').clearRect(0, 0, width, height);
+        topViewDrawnIndex = 0;
+      }
+      if (lastIndex > topViewDrawnIndex) {
+        const tctx = topViewTraceCanvas.getContext('2d');
+        tctx.lineCap = 'round';
+        tctx.lineJoin = 'round';
+
+        // 切削段：多刀程序线宽不同时按段分批（相邻同宽合批，宽度变化才 stroke）
+        tctx.strokeStyle = 'rgba(35,194,119,.88)';
+        tctx.setLineDash([]);
+        let currentWidth = -1;
+        tctx.beginPath();
+        const strokeWidth = p => {
+          const slot = p.toolId ? toolMagazine[p.toolId] : null;
+          return Math.max(2, (slot ? slot.diameter : (simToolBeforeFirstChange ?? activeTool.diameter)) * scale);
+        };
+        for (let i = topViewDrawnIndex + 1; i <= lastIndex; i++) {
+          if (points[i].rapid) continue;
+          const a = points[i - 1];
+          const b = points[i];
+          if (isFaceMillingCut(a, b)) continue;
+          const w = strokeWidth(b);
+          if (w !== currentWidth) {
+            if (currentWidth >= 0) tctx.stroke();
+            currentWidth = w;
+            tctx.lineWidth = w;
+            tctx.beginPath();
+          }
+          tctx.moveTo(cx + a.x * scale, cy - a.y * scale);
+          tctx.lineTo(cx + b.x * scale, cy - b.y * scale);
+        }
+        if (currentWidth >= 0) tctx.stroke();
+
+        // 快速段：虚线一批
+        tctx.strokeStyle = 'rgba(240,177,59,.85)';
+        tctx.lineWidth = 1.4;
+        tctx.setLineDash([5, 4]);
+        tctx.beginPath();
+        for (let i = topViewDrawnIndex + 1; i <= lastIndex; i++) {
+          if (!points[i].rapid) continue;
+          const a = points[i - 1];
+          const b = points[i];
+          tctx.moveTo(cx + a.x * scale, cy - a.y * scale);
+          tctx.lineTo(cx + b.x * scale, cy - b.y * scale);
+        }
+        tctx.stroke();
+        tctx.setLineDash([]);
+        topViewDrawnIndex = lastIndex;
+      }
+
+      // —— 合成：背景 + 轨迹 + 撞刀点 + 活动刀圈 ——
+      ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(topViewBgCanvas, 0, 0);
+      ctx.drawImage(topViewTraceCanvas, 0, 0);
 
       alarms.forEach(alarm => {
         if (alarm.type !== 'crash') return;
@@ -1961,235 +3686,108 @@ M30`;
       });
 
       if (activePoint) {
+        const activeSlot = activePoint.toolId ? toolMagazine[activePoint.toolId] : null;
+        const activeRadius = activeSlot ? activeSlot.diameter / 2 : (simToolBeforeFirstChange ?? activeTool.diameter) / 2;
         ctx.strokeStyle = '#3dd6d0';
         ctx.fillStyle = '#3dd6d0';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(cx + activePoint.x * scale, cy - activePoint.y * scale, TOOL_RADIUS * scale, 0, Math.PI * 2);
+        ctx.arc(cx + activePoint.x * scale, cy - activePoint.y * scale, activeRadius * scale, 0, Math.PI * 2);
         ctx.stroke();
         ctx.beginPath();
         ctx.arc(cx + activePoint.x * scale, cy - activePoint.y * scale, 2.5 * dpr, 0, Math.PI * 2);
         ctx.fill();
       }
-
-      ctx.fillStyle = 'rgba(238,243,246,.72)';
-      ctx.font = `${10 * dpr}px Consolas, monospace`;
-      ctx.fillText('X', width - 18 * dpr, cy - 5 * dpr);
-      ctx.fillText('Y', cx + 6 * dpr, 17 * dpr);
-      const stockText = stock.type === 'round'
-        ? `Ø${formatStockNumber(stock.width)}`
-        : `${formatStockNumber(stock.width)}x${formatStockNumber(stock.depth)}`;
-      const labelY = stock.type === 'round' ? cy - stock.radius * scale - 7 * dpr : cy - stock.depth * scale / 2 - 7 * dpr;
-      ctx.fillText(stockText, cx - 20 * dpr, labelY);
     }
 
-    function addPathSegment(a, b) {
-      const xyDistance = Math.hypot(b.x - a.x, b.y - a.y);
-      const isCuttingOnStock = !b.rapid && Math.min(a.z, b.z) <= 0;
-      const color = b.rapid ? 0xf0b13b : 0x1593ff;
-      const opacity = b.rapid ? .64 : isCuttingOnStock ? .9 : .54;
-      const dashed = b.rapid && xyDistance > 0.03;
-      addLine(a, b, color, opacity, dashed);
+    // 路径线合并为 4 个 LineSegments 批次（切削/空走/快速虚线/快速实线），用 drawRange 增量增长，
+    // 避免 0.6mm 采样产生成千上万个独立 Line 对象（draw call 随进度线性增长）
+    function isFaceMillingCut(a, b) {
+      const slot = b.toolId ? toolMagazine[b.toolId] : null;
+      return !b.rapid && Math.min(a.z, b.z) <= 0 && slot?.type === 'facemill';
     }
 
-    function addLine(a, b, color, opacity = .32, dashed = false) {
-      const geometry = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(a.x, a.y, a.z),
-        new THREE.Vector3(b.x, b.y, b.z)
-      ]);
-      const material = dashed
-        ? new THREE.LineDashedMaterial({ color, transparent: true, opacity, dashSize: 2.4, gapSize: 1.4, depthWrite: false })
-        : new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
-      const line = new THREE.Line(geometry, material);
-      if (dashed) line.computeLineDistances();
-      pathGroup.add(line);
-    }
-
-    function addSurfaceCut(a, b, options = {}) {
-      if (b.rapid || Math.min(a.z, b.z) > 0) return;
-
-      const xyDistance = Math.hypot(b.x - a.x, b.y - a.y);
-      const angle = Math.atan2(b.y - a.y, b.x - a.x);
-      const midX = (a.x + b.x) / 2;
-      const midY = (a.y + b.y) / 2;
-      const cutDepth = options.depth ?? getVisualCutDepth(a, b);
-      const cutWidth = TOOL_RADIUS * 2.08;
-      const cutMaterials = createCutMaterials(cutDepth);
-
-      if (xyDistance < 0.03) {
-        return;
+    function initPathLines() {
+      disposePathLines();
+      const counts = { cut: 0, air: 0, rapidDash: 0, rapidSolid: 0 };
+      for (let i = 1; i < pathPoints.length; i++) {
+        const a = pathPoints[i - 1];
+        const b = pathPoints[i];
+        if (b.rapid) {
+          if (Math.hypot(b.x - a.x, b.y - a.y) > 0.03) counts.rapidDash++;
+          else counts.rapidSolid++;
+        } else if (isFaceMillingCut(a, b)) {
+          // 平面铣削由银灰加工面直接表达，不再叠加蓝色路径线。
+          continue;
+        } else if (Math.min(a.z, b.z) <= 0) {
+          counts.cut++;
+        } else {
+          counts.air++;
+        }
       }
-
-      addCutStrip(midX, midY, xyDistance, cutWidth, angle, cutDepth, cutMaterials);
-    }
-
-    function getVisualCutDepth(a, b) {
-      const stock = getStock();
-      const programmedDepth = Math.abs(Math.min(0, a.z, b.z));
-      return Math.min(stock.height - .25, Math.max(.35, programmedDepth));
-    }
-
-    function createCutMaterials(depth) {
-      const depthRatio = Math.min(1, depth / Math.max(TOOL_RADIUS * 1.4, .1));
-      return {
-        bottom: new THREE.MeshBasicMaterial({
-          color: 0x1593ff,
-          transparent: true,
-          opacity: .76,
-          depthTest: false,
-          depthWrite: false
-        }),
-        wall: new THREE.MeshBasicMaterial({
-          color: depthRatio > .55 ? 0x07345f : 0x0b63a9,
-          transparent: true,
-          opacity: .2 + depthRatio * .1,
-          depthTest: false,
-          depthWrite: false
-        }),
-        highlight: new THREE.MeshBasicMaterial({
-          color: 0x83e7ff,
-          transparent: true,
-          opacity: .48,
-          depthTest: false,
-          depthWrite: false
-        }),
-        freshMetal: new THREE.MeshBasicMaterial({
-          color: 0x49d8ff,
-          transparent: true,
-          opacity: .2,
-          depthTest: false,
-          depthWrite: false
-        }),
-        toolMark: new THREE.LineBasicMaterial({
-          color: 0xbdf6ff,
-          transparent: true,
-          opacity: .28,
-          depthTest: false
-        })
+      pathLines = {
+        cut: createPathLineBatch(counts.cut, 0x1593ff, .9, false),
+        air: createPathLineBatch(counts.air, 0x1593ff, .54, false),
+        rapidDash: createPathLineBatch(counts.rapidDash, 0xf0b13b, .64, true),
+        rapidSolid: createPathLineBatch(counts.rapidSolid, 0xf0b13b, .64, false)
       };
     }
 
-    function addCutStrip(x, y, length, width, angle, depth, materials) {
-      const topZ = 0.075;
-      const shadow = new THREE.Mesh(
-        createRoundedSlotGeometry(length + width * .18, width * 1.06),
-        materials.wall
-      );
-      shadow.position.set(x, y, topZ - .006);
-      shadow.rotation.z = angle;
-      shadow.renderOrder = 3;
-      surfaceCutGroup.add(shadow);
+    function createPathLineBatch(capacity, color, opacity, dashed) {
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(capacity * 6), 3));
+      if (dashed) {
+        geometry.setAttribute('lineDistance', new THREE.BufferAttribute(new Float32Array(capacity * 2), 1));
+      }
+      geometry.setDrawRange(0, 0);
+      const material = dashed
+        ? new THREE.LineDashedMaterial({ color, transparent: true, opacity, dashSize: 2.4, gapSize: 1.4, depthWrite: false })
+        : new THREE.LineBasicMaterial({ color, transparent: true, opacity, depthWrite: false });
+      const object = new THREE.LineSegments(geometry, material);
+      if (capacity > 0) pathGroup.add(object);
+      return { object, geometry, dashed, used: 0, capacity };
+    }
 
-      const bottom = new THREE.Mesh(
-        createRoundedSlotGeometry(length, width * .78),
-        materials.bottom
-      );
-      bottom.position.set(x, y, topZ);
-      bottom.rotation.z = angle;
-      bottom.renderOrder = 4;
-      surfaceCutGroup.add(bottom);
-
-      const sheen = new THREE.Mesh(
-        createRoundedSlotGeometry(Math.max(width * .9, length * .9), width * .38),
-        materials.freshMetal
-      );
-      sheen.position.set(x, y, topZ + .012);
-      sheen.rotation.z = angle;
-      sheen.renderOrder = 5;
-      surfaceCutGroup.add(sheen);
-
-      [-1, 1].forEach(sign => {
-        const lip = new THREE.Mesh(
-          new THREE.PlaneGeometry(Math.max(.01, length - width * .72), Math.max(.035, width * .022)),
-          materials.highlight
-        );
-        lip.position.set(
-          x + Math.cos(angle + Math.PI / 2) * sign * width * .39,
-          y + Math.sin(angle + Math.PI / 2) * sign * width * .39,
-          topZ + .03
-        );
-        lip.rotation.z = angle;
-        lip.renderOrder = 6;
-        surfaceCutGroup.add(lip);
+    function disposePathLines() {
+      if (!pathLines) return;
+      Object.values(pathLines).forEach(batch => {
+        pathGroup.remove(batch.object);
+        batch.geometry.dispose();
+        batch.object.material.dispose();
       });
-
-      if (length > TOOL_RADIUS * 3) {
-        addCutToolMarks(x, y, length, width, angle, topZ + .04, materials.toolMark);
-      }
+      pathLines = null;
     }
 
-    function createRoundedSlotGeometry(length, width) {
-      const shape = new THREE.Shape();
-      const radius = width / 2;
-      const halfLength = Math.max(length / 2, radius);
-      const straight = Math.max(0, halfLength - radius);
-      shape.moveTo(-straight, -radius);
-      shape.lineTo(straight, -radius);
-      shape.absarc(straight, 0, radius, -Math.PI / 2, Math.PI / 2, false);
-      shape.lineTo(-straight, radius);
-      shape.absarc(-straight, 0, radius, Math.PI / 2, Math.PI * 1.5, false);
-      return new THREE.ShapeGeometry(shape, 24);
-    }
+    function addPathSegment(a, b) {
+      if (!pathLines) return;
+      if (isFaceMillingCut(a, b)) return;
+      const xyDistance = Math.hypot(b.x - a.x, b.y - a.y);
+      const batch = b.rapid
+        ? (xyDistance > 0.03 ? pathLines.rapidDash : pathLines.rapidSolid)
+        : (Math.min(a.z, b.z) <= 0 ? pathLines.cut : pathLines.air);
+      if (batch.used >= batch.capacity) return;
 
-    function addCutDisc(x, y, radius, depth, materials, showRim = false) {
-      const topZ = 0.082;
-      const wall = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius * .96, radius * .96, depth, 56, 1, true),
-        materials.wall
-      );
-      wall.rotation.x = Math.PI / 2;
-      wall.position.set(x, y, -depth / 2 + .04);
-      wall.renderOrder = 3;
-      surfaceCutGroup.add(wall);
+      const positions = batch.geometry.attributes.position;
+      const index = batch.used * 6;
+      positions.array[index] = a.x;
+      positions.array[index + 1] = a.y;
+      positions.array[index + 2] = a.z;
+      positions.array[index + 3] = b.x;
+      positions.array[index + 4] = b.y;
+      positions.array[index + 5] = b.z;
+      positions.needsUpdate = true;
 
-      const bottom = new THREE.Mesh(
-        new THREE.CircleGeometry(radius * .86, 56),
-        materials.bottom
-      );
-      bottom.position.set(x, y, topZ);
-      bottom.renderOrder = 4;
-      surfaceCutGroup.add(bottom);
-
-      if (showRim) {
-        const sheen = new THREE.Mesh(
-          new THREE.CircleGeometry(radius * .52, 36),
-          materials.freshMetal
-        );
-        sheen.position.set(x, y, topZ + .014);
-        sheen.renderOrder = 5;
-        surfaceCutGroup.add(sheen);
-
-        const rim = new THREE.Mesh(
-          new THREE.TorusGeometry(radius * .96, Math.max(.035, radius * .035), 8, 64),
-          materials.highlight
-        );
-        rim.position.set(x, y, topZ + .035);
-        rim.renderOrder = 6;
-        surfaceCutGroup.add(rim);
+      if (batch.dashed) {
+        // LineSegments 每对顶点的 lineDistance 独立（0 / 段长），可增量维护
+        const distances = batch.geometry.attributes.lineDistance;
+        const vertex = batch.used * 2;
+        distances.array[vertex] = 0;
+        distances.array[vertex + 1] = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z);
+        distances.needsUpdate = true;
       }
-    }
 
-    function addCutToolMarks(x, y, length, width, angle, z, material) {
-      const points = [];
-      const markCount = Math.max(2, Math.min(8, Math.floor(length / (TOOL_RADIUS * 2.2))));
-      const normalAngle = angle + Math.PI / 2;
-      for (let i = 1; i <= markCount; i++) {
-        const t = i / (markCount + 1) - .5;
-        const centerX = x + Math.cos(angle) * length * t;
-        const centerY = y + Math.sin(angle) * length * t;
-        const half = width * .28;
-        points.push(
-          new THREE.Vector3(centerX - Math.cos(normalAngle) * half, centerY - Math.sin(normalAngle) * half, z),
-          new THREE.Vector3(centerX + Math.cos(normalAngle) * half, centerY + Math.sin(normalAngle) * half, z)
-        );
-      }
-      if (!points.length) return;
-      const marks = new THREE.LineSegments(
-        new THREE.BufferGeometry().setFromPoints(points),
-        material
-      );
-      marks.renderOrder = 7;
-      surfaceCutGroup.add(marks);
+      batch.used++;
+      batch.geometry.setDrawRange(0, batch.used * 2);
     }
 
     function drawCrashes(items) {
@@ -2214,7 +3812,7 @@ M30`;
 
       const box = new THREE.Box3();
       points.forEach(p => box.expandByPoint(new THREE.Vector3(p.x, p.y, p.z)));
-      box.expandByScalar(TOOL_RADIUS);
+      box.expandByScalar(activeTool.radius);
 
       const size = new THREE.Vector3();
       box.getSize(size);
@@ -2234,8 +3832,9 @@ M30`;
       elements.status.textContent = '仿真运行中';
       elements.lamp.style.background = 'var(--amber)';
       elements.lamp.style.boxShadow = '0 0 12px var(--amber)';
-      clearGroup(pathGroup);
-      clearGroup(surfaceCutGroup);
+      initPathLines();
+      resetCarve();
+      lastCarvePos = { ...pathPoints[0] };
       drawTopView(pathPoints, currentPos, 0);
       animationId = requestAnimationFrame(stepSimulation);
     }
@@ -2249,25 +3848,40 @@ M30`;
 
       const start = simIndex === 1 ? pathPoints[0] : pathPoints[simIndex - 1];
       const end = pathPoints[simIndex];
-      segmentT += SPEED * getSimulationSpeedMultiplier();
+      segmentT += SPEED * getSimulationSpeedMultiplier() * (end.rapid ? RAPID_SPEED_MULTIPLIER : 1);
       currentPos = lerpPoint(start, end, Math.min(segmentT, 1));
       moveTool(currentPos);
       updateMetrics(currentPos, simIndex, (simIndex / Math.max(pathPoints.length - 1, 1)) * 100);
       drawTopView(pathPoints, currentPos, simIndex - 1);
 
+      // 实时材料去除：从上一刀尖位置雕刻到当前位置
+      carveAlong(lastCarvePos, currentPos);
+      lastCarvePos = { ...currentPos };
+      flushCarve();
+
       if (segmentT >= 1) {
         addPathSegment(start, end);
-        clearGroup(surfaceCutGroup);
-        drawSurfaceCuts(pathPoints.slice(0, simIndex + 1));
+        if (end.toolChange && toolMagazine[end.toolChange.to]) {
+          const fromId = end.toolChange.from;
+          // from 为 null 表示首次换刀前是"手动选中的当前刀"
+          const fromTool = fromId && toolMagazine[fromId] ? createMagazineTool(toolMagazine[fromId]) : activeTool;
+          const fromLabel = fromId ? `T0${fromId}` : '当前刀';
+          const fromDesc = `${toolTypeLabel(fromTool)} Ø${formatStockNumber(fromTool.diameter)}`;
+          const toTool = createMagazineTool(toolMagazine[end.toolChange.to]);
+          const toDesc = `${toolTypeLabel(toTool)} Ø${formatStockNumber(toTool.diameter)}`;
+          applyMagazineTool(end.toolChange.to);
+          elements.status.textContent = `换刀 ${fromLabel}→T0${end.toolChange.to}（${fromDesc} → ${toDesc}）`;
+          appendToolChangeLog(end.toolChange, fromLabel, fromDesc, toDesc);
+        }
         segmentT = 0;
         simIndex++;
-        drawTopView(pathPoints, end, simIndex - 1);
       }
       animationId = requestAnimationFrame(stepSimulation);
     }
 
     function finishSimulation() {
       running = false;
+      flushCarve(true);   // 结束时强制上传，保证末端雕刻完整
       elements.status.textContent = alarms.some(a => a.type === 'crash') ? '完成：有撞刀风险' : '仿真完成';
       elements.lamp.style.background = alarms.some(a => a.type === 'crash') ? 'var(--red)' : 'var(--green)';
       elements.lamp.style.boxShadow = alarms.some(a => a.type === 'crash') ? '0 0 12px var(--red)' : '0 0 12px var(--green)';
@@ -2283,10 +3897,12 @@ M30`;
       pathPoints = [];
       alarms = [];
       totalLength = 0;
-      currentPos = { x: 0, y: 0, z: INITIAL_Z };
+      simToolBeforeFirstChange = null;
+      currentPos = { x: 0, y: 0, z: activeTool.safeZ };
       if (clearCode) elements.gcode.value = '';
-      clearGroup(pathGroup);
-      clearGroup(surfaceCutGroup);
+      disposePathLines();
+      resetCarve();
+      lastCarvePos = { ...currentPos };
       clearGroup(crashGroup);
       if (boundsHelper) {
         scene.remove(boundsHelper);
@@ -2298,7 +3914,7 @@ M30`;
       elements.status.textContent = '就绪';
       elements.lamp.style.background = 'var(--green)';
       elements.lamp.style.boxShadow = '0 0 12px var(--green)';
-      elements.pos.textContent = `X0.000 Y0.000 Z${INITIAL_Z.toFixed(3)}`;
+      elements.pos.textContent = `X0.000 Y0.000 Z${activeTool.safeZ.toFixed(3)}`;
       elements.cmd.textContent = '--';
       elements.length.textContent = '0.0 mm';
       elements.crashState.textContent = '正常';
@@ -2338,12 +3954,52 @@ M30`;
       });
     }
 
+    // 仿真中换刀时往日志末尾追加一条（不清空报警列表）
+    function appendToolChangeLog(change, fromLabel, fromDesc, toDesc) {
+      const div = document.createElement('div');
+      div.className = 'log-item';
+      div.textContent = `第${change.line}行：已换刀 ${fromLabel}→T0${change.to}（${fromDesc} → ${toDesc}），主轴已停转，继续执行需 M03。`;
+      elements.log.appendChild(div);
+    }
+
     function moveTool(p) {
       toolGroup.position.set(p.x, p.y, p.z);
     }
 
+    // 换到刀库中指定编号的刀具（高级模式 T/M06 执行时调用），重建 3D 刀具与补偿面板
+    function applyMagazineTool(toolId) {
+      const slot = toolMagazine[toolId];
+      if (!slot) return false;
+      const newTool = createMagazineTool(slot);
+      const sameTool = newTool.type === activeTool.type && newTool.diameter === activeTool.diameter;
+      if (!sameTool) {
+        const previousPosition = toolGroup?.position?.clone();
+        if (simToolBeforeFirstChange === null) simToolBeforeFirstChange = activeTool.diameter;
+        activeTool = newTool;
+        elements.toolCuttingLength.value = activeTool.cuttingLength;
+        elements.toolOverhang.value = activeTool.overhang;
+        elements.toolSafeZ.value = activeTool.safeZ;
+        rebuildToolScene();
+        if (previousPosition) toolGroup.position.copy(previousPosition);
+        elements.toolSummary.textContent = `${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)} · 刃长${formatStockNumber(activeTool.cuttingLength)} · 伸出${formatStockNumber(activeTool.overhang)} · 安全Z${formatStockNumber(activeTool.safeZ)}`;
+        elements.radiusCompensation.textContent = `${activeTool.radius.toFixed(3)} mm`;
+        elements.lengthCompensation.textContent = `${activeTool.overhang.toFixed(3)} mm`;
+        // 预设按钮高亮仅对匹配的立铣刀生效
+        elements.toolPresets.forEach(button => {
+          const selected = activeTool.type === 'endmill' && Number(button.dataset.tool) === activeTool.diameter;
+          button.classList.toggle('active', selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+        // 状态行刀具描述同步（"刀具 立铣刀 Ø5mm"）
+        const stock = getStock();
+        elements.stockLabel.textContent = stock.label.replace(/\/ 刀具.*$/, `/ 刀具 ${toolTypeLabel(activeTool)} Ø${formatStockNumber(activeTool.diameter)}mm`);
+      }
+      return true;
+    }
+
     function getSimulationSpeedMultiplier() {
-      return getStock().isLarge ? LARGE_STOCK_SPEED_MULTIPLIER : 1;
+      // 小料（棒材等）2 倍速播放；大件（≥100mm）9 倍速
+      return getStock().isLarge ? LARGE_STOCK_SPEED_MULTIPLIER : 2;
     }
 
     function clearGroup(group) {
